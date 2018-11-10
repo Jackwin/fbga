@@ -16,8 +16,8 @@
 XGpio Gpio1Output;
  void IntcTypeSetup(XScuGic *InstancePtr, u32 intId, u32 intType);
  int GpioIntrInit(XScuGic *intc, XGpio *GpioInstancePtr);
- int PlIntrInit(XScuGic intc);
- void PlIntrHandler(void *param);
+ int PLIntrInit(XScuGic intc);
+ void PLIntrHandler(void *param);
  void GpioIntrHandler(void *param);
 
 

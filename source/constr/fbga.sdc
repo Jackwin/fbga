@@ -77,7 +77,9 @@ set_property PACKAGE_PIN U20 [get_ports  {cdsclk2_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {cdsclk2_o}]
 
 
-create_generated_clock -name adcclk [get_pins clk_gen_inst/adcclk_reg/Q] -divide_by 40 -source [get_pins clk_wiz_inst/inst/clkout1_buf/O]
+#create_generated_clock -name adcclk [get_pins clk_gen_inst/adcclk_reg/Q] -divide_by 40 -source [get_pins clk_wiz_inst/inst/clkout1_buf/O]
+create_generated_clock -name adcclk -source [get_pins clk_wiz_inst/clk_200m] -divide_by 40 [get_pins clk_gen_inst/adcclk_reg/Q]
+
 
 
 

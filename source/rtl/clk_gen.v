@@ -66,7 +66,7 @@ wire [0:0]      sclk_ila;
 assign adcclk_ila[0] = adcclk_i;
 assign cdsclk2_ila[0] = cdsclk2_i;
 assign sclk_ila[0] = reset_n;
-ila_clk_gen your_instance_name (
+ila_clk_gen ila_clk_gen_inst (
     .clk(clk), // input wire clk
     .probe0(clk_cnt), // input wire [5:0]  probe0
     .probe1(adcclk_ila), // input wire [0:0]  probe1

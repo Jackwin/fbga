@@ -56,9 +56,9 @@
 #include "xil_exception.h"
 
 #define TIMER_LOAD_VALUE    0xFFFFFFFF
-#define PL_BRAM_ADDR 0xc0000000
-#define PL_DATA_ADDR 0xc2000000
-#define BRAM_GP0_ADDR 0x40000000
+#define PL_BRAM_ADDR 0xc2000000
+#define PL_DATA_ADDR 0xc4000000
+#define BRAM_GP0_ADDR 0x42000000
 #define PS_DDR_ADDR 0x10000000 // not start 0x0
 #define TOTAL_NUM 512
 #define BUF_LEN (TOTAL_NUM * 4) // Byte
@@ -90,8 +90,8 @@ int hs_timer(void)
         return XST_FAILURE;
     }
     else {
-    	xil_printf("XScuTimer_CfgInitialize OK\n\r");
-    	return XST_SUCCESS;
+        xil_printf("XScuTimer_CfgInitialize OK\n\r");
+        return XST_SUCCESS;
     }
 }
 
@@ -99,44 +99,32 @@ int hs_timer(void)
 
 int cdma_test(void)
 {
-	u32 Ledwidth;
-	u32 i,k ,data = 0;
-	int status;
-	volatile int CntValue1,CntValue2;
+    u32 i,k ,data = 0;
+    int status;
+    volatile int CntValue1,CntValue2;
 
-	u32 *rx_buffer = (u32 *) PS_DDR_ADDR;
-	//u32 *tx_buffer = (u32 *) PL_BRAM_ADDR;
-	u32 *tx_buffer = (u32 *) PL_DATA_ADDR;
-	u32 *rd_ram    = (u32 *) BRAM_GP0_ADDR;
+    // PL_BRAM_ADDR is the BRAM address used for the DMA test, which is accessable via GP(BRAM_GP0_ADDR)
+    //u32 *tx_buffer = (u32 *) PL_BRAM_ADDR;
+    // BRAM_GP0_ADDR is used to initialize the PL_BRAM_ADDR contents
+     u32 *rd_ram    = (u32 *) BRAM_GP0_ADDR;
+    // PL_DATA_ADDR is the address for the ADC data in PL
+    u32 *tx_buffer = (u32 *) PL_DATA_ADDR;
+    // DDR address
+    u32 *rx_buffer = (u32 *) PS_DDR_ADDR;
+    init_platform();
 
-	init_platform();
-	data = 0;
+    // Initialize the PL_BRAM_ADDR contents
+    data = 0;
+     for (i = 0; i < TOTAL_NUM; i++) {
+        data = data + 1;
+        *(rd_ram + i) = data;
+    }
 
-	xil_printf("-----------------------*-----------------------\n\r");
-	xil_printf("-Simple DMA demo based on Zynq 7020 board          -\n\r");
-	xil_printf("-write some data to DDR                       -\n\r");
-	xil_printf("-move those data to bram and read it from GP0 -\n\r");
-	xil_printf("-----------------------*-----------------------\n\r");
-
-	for (i = 0; i < TOTAL_NUM; i++) {
-		data = data + 1;
-		*(rd_ram + i) = data;
-	}
-/*
-    for(i=0; i<4; i++)
-     //for(i=0; i<BUFF_LEN/4; i++)
-     {
-         k = *(rd_ram + i);
-         xil_printf("TX_BUF from address = %2d, the     read value = %8x-----------------------\n\r",i,k);
-     }
-*/
-	status = hs_timer();
-	if (status != XST_SUCCESS) {
-		xil_printf("Fail to enable timer.\n");
-		return 0;
-	}
-
-
+    status = hs_timer();
+    if (status != XST_SUCCESS) {
+        xil_printf("Fail to enable timer.\n");
+        return 0;
+    }
 
     // Set up the AXI CDMA
     printf("--Set up the AXI CDMA\n\r");
@@ -153,8 +141,8 @@ int cdma_test(void)
     XAxiCdma_IntrDisable(&axi_cdma, XAXICDMA_XR_IRQ_ALL_MASK);
 
     if (XAxiCdma_IsBusy(&axi_cdma)) {
-    	printf("AXI CDMA is busy...\n\r");
-    	while (XAxiCdma_IsBusy(&axi_cdma));
+        printf("AXI CDMA is busy...\n\r");
+        while (XAxiCdma_IsBusy(&axi_cdma));
     }
 
     Xil_DCacheFlush();
@@ -171,41 +159,29 @@ int cdma_test(void)
                                      NULL,
                                      NULL);
     if(status != XST_SUCCESS) {
-    	xil_printf("DMA fails.\n\r");
+        xil_printf("DMA fails.\n\r");
     }
     Xil_DCacheFlush();
 
 
     // Wait until core isn't busy
-	if (XAxiCdma_IsBusy(&axi_cdma)) {
-		printf("AXI CDMA is busy...\n\r");
-		while (XAxiCdma_IsBusy(&axi_cdma));
-	}
-	    XScuTimer_Stop(&Timer);
-	    CntValue2 = XScuTimer_GetCounterValue(&Timer);
-	   // printf ("CntValue2 is %x.\n", CntValue2);
-	    int duration = (CntValue1-CntValue2)*3/1000;
-	    int rate = TOTAL_NUM * 4 / duration;
-	    printf("DMA from BRAM to DDR is %d MB/s\n\r", rate);  // Timer fre is 333.33MHz
+    if (XAxiCdma_IsBusy(&axi_cdma)) {
+        printf("AXI CDMA is busy...\n\r");
+        while (XAxiCdma_IsBusy(&axi_cdma));
+    }
+    XScuTimer_Stop(&Timer);
+    CntValue2 = XScuTimer_GetCounterValue(&Timer);
+    printf ("CntValue2 is %x.\n", CntValue2);
+    int duration = (CntValue1-CntValue2)*3/1000;
+    int rate = TOTAL_NUM * 4 / duration;
+    printf("DMA from BRAM to DDR is %d MB/s\n\r", rate);  // Timer fre is 333.33MHz
 
      Xil_DCacheInvalidateRange((u32 )PS_DDR_ADDR, BUF_LEN);
 
-
-
-     for(i=0; i<TOTAL_NUM; i++)
-     //for(i=0; i<BUFF_LEN/4; i++)
+     for(i=0; i<16; i++)
      {
          k = *(rx_buffer + i);
-         xil_printf("The DMA read from address = %2d, the     read value = %8x-----------------------\n\r",i,k);
+         xil_printf("The DMA read from address = %2d, the read value = %8x-----------------------\n\r",i,k);
      }
-
-
-
-
-	while (1) {
-
-		}
-
-    cleanup_platform();
-    return 0;
+     return 1;
 }

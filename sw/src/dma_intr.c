@@ -1,10 +1,10 @@
 #include "dma_intr.h"
 volatile static int Done = 0;	/* Dma transfer is done */
 volatile static int error = 0;	/* Dma Bus Error occurs */
-#define PL_BRAM_ADDR 0xC0000000
-#define PL_ADC_DATA_ADDR 0xc2000000
-#define BRAM_GP0_ADDR 0x40000000
-#define PS_DDR_ADDR 0x3fff0000
+#define PL_BRAM_ADDR 0xC2000000
+#define PL_ADC_DATA_ADDR 0xc4000000
+#define BRAM_GP0_ADDR 0x42000000
+#define PS_DDR_ADDR 0x10000000
 #define TOTAL_NUM 2
 #define BUF_LEN (TOTAL_NUM * 4) // Byte
 #define BUFFER_BYTESIZE		64
@@ -18,8 +18,8 @@ int XAxiCdma_SetupIntr(XScuGic *IntcInstancePtr, XAxiCdma *InstancePtr,
     u8  *SrcPtr;
     u8  *DestPtr;
     u32 *rx_buffer = (u32 *) PS_DDR_ADDR;
-    //u32 *tx_buffer = (u32 *) PL_BRAM_ADDR;
-    u32 *tx_buffer = (u32 *)PL_ADC_DATA_ADDR;
+    u32 *tx_buffer = (u32 *) PL_BRAM_ADDR;
+   // u32 *tx_buffer = (u32 *)PL_ADC_DATA_ADDR;
     u32 *rd_ram    = (u32 *) BRAM_GP0_ADDR;
     data = 0;
        for (i = 0; i < TOTAL_NUM; i++) {

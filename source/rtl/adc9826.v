@@ -14,7 +14,7 @@ module adc9826 # (
     input           adc_start_in, // from g11620
     output reg      adc_done_out,
 
-    output  [8:0]    ram_addr_o,
+    output  [9:0]    ram_addr_o,
     output [31:0]   ram_data_o,
     output          ram_wr_o
 );
@@ -39,19 +39,22 @@ reg [1:0]   state;
 wire        iddr_ce;
 reg         iddr_rst;
 wire [7:0]  iddr_q1/*synthesis keep*/, iddr_q2/*synthesis keep*/;
+reg [7:0]   iddr_q2_r;
 reg [1:0]   delay_cnt;
-reg        adc_data_valid;
+reg         adc_data_valid, adc_data_valid_r;
 reg [8:0]   adc_data_cnt;
 wire [15:0] adc_data;
+reg [15:0]  adc_data_r;
 reg         cfg_done;
+reg         cnt;
 // Debug signals
 wire [0:0]  adc_ena_ila;
 wire [0:0]  cfg_done_ila;
 wire [0:0]  iddr_ce_ila;
 wire [0:0]  adc_data_valid_ila;
 // RAM signals
-reg [8:0]   ram_addr;
-reg         ram_wr;
+reg [9:0]   ram_addr;
+wire         ram_wr;
 
 assign adc_clk_o = clk;
 assign sclk = clk;
@@ -149,35 +152,61 @@ generate
     end
 endgenerate
 
-assign adc_data = {iddr_q1, iddr_q2};
+
+// Strange: Use the SAME_EDGE_PIPELINED in IDDR, but the Q1 and Q2 are not at the same edge
+// Q1 is one clock cycle later than Q2.
+always @(posedge clk) begin
+    iddr_q2_r <= iddr_q2;
+end
+
+assign adc_data = {iddr_q1, iddr_q2_r};
+
+always @(posedge clk) begin
+    adc_data_r <= adc_data;
+end // always @(posedge clk)
+
+always @(posedge clk) begin
+    adc_data_valid_r <= adc_data_valid;
+end // always @(posedge clk)
+
+always @(posedge clk) begin
+    if (~rst_n) begin
+        cnt <= 'h0;
+    end // if (~rst_n)
+    else begin
+        if (adc_data_valid_r) cnt <= cnt + 1'b1;
+    end // else
+end // always @(posedge clk)
+
+assign ram_wr = cnt; //Write for every two 16-bit data
 
 always @(posedge clk) begin
     if (~rst_n) begin
         ram_addr <= 'h0;
     end // if (~rst_n)
     else begin
-        if (adc_data_valid) begin
-            ram_addr <= ram_addr + 1'd1;
+        if (ram_wr) begin
+            ram_addr <= ram_addr + 3'd4; // The address is byte-address
         end // if (adc_data_valid)
     end // else
 end // always @(posedge clk)
 
 assign ram_addr_o = ram_addr;
-assign ram_wr_o = adc_data_valid;
-assign ram_data_o[15:0] = adc_data;
-assign ram_data_o[31:16] = 'h0;
+assign ram_wr_o = ram_wr;
+assign ram_data_o = {adc_data_r, adc_data};
+
 
 // -------------------------- debug ---------------------------
 assign iddr_ce_ila[0] = iddr_ce;
 assign cfg_done_ila[0] = cfg_done;
-assign adc_data_valid_ila[0] = adc_data_valid;
+assign adc_data_valid_ila[0] = adc_data_valid_r;
 
 ila_adc ila_adc_inst (
     .clk(clk), // input wire clk
     .probe0(state), // input wire [1:0]  probe0
     .probe1(adc_data_in), // input wire [7:0]  probe1
     .probe2(iddr_q1), // input wire [7:0]  probe2
-    .probe3(iddr_q2), // input wire [7:0]  probe3
+    .probe3(iddr_q2_r), // input wire [7:0]  probe3
     .probe4(delay_cnt), // input wire [1:0]  probe4
     .probe5(adc_data_cnt), // input wire [8:0]  probe5
     .probe6(cfg_done_ila), // input wire [0:0]  probe6

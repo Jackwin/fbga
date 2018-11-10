@@ -32,11 +32,12 @@ module adc9826_cfg
     output reg [8:0]cfg_rd_data_o,
     output reg      cfg_rd_valid_o,
 
+/*
     // control RAM
     output wire       cfg_ram_rd_o,
     output wire [7:0] cfg_ram_addr_o,
     input [31:0]     cfg_ram_din,
-
+*/
 
     //inout           sdata_io,
     input           sdata_i,
@@ -251,7 +252,7 @@ always @(posedge clk) begin
     cfg_rd_data_o <= ram_dout;
     cfg_rd_valid_o <= cfg_rd_in;
 end // always @(posedge clk)
-
+/*
 wire [0:0]      cfg_start_vio;
 wire [0:0]      cfg_rd_vio;
 wire [0:0]      sload_vio;
@@ -286,5 +287,5 @@ ila_ad9826 ila_ad9826_cfg_inst (
     .probe10(tri_en_vio)
 
 );
-
+*/
 endmodule

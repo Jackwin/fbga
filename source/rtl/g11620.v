@@ -7,33 +7,22 @@ module g11620 # (
 (
     input           clk,
     input           rst_n,
-
+/*
     input           start_in, // Start the integration
     input [9:0]     integ_time_in,
     input           set_integ_time,
-
+*/
     output reg      reset_o,
     output          g11620_clk, // MAX fre is 5 MHz
     input           ad_sp,
 
     // control RAM
-    /*
     input wire      start_in,
     input wire      soft_reset_in,
     output reg      done_o,
     output reg       cfg_ram_rd_o,
     output reg [7:0] cfg_ram_addr_o,
-    input [31:0]     cfg_ram_din,
-*/
-
-    // Register interface
-    input [31:0]    data_in,
-    input           wr_in,
-    input [3:0]     addr_in,
-    input           rd_in,
-    output reg [31:0]   rd_data_o,
-    output reg         rd_valid_o
-
+    input [31:0]     cfg_ram_din
 );
 
 localparam CTRL_R_ADDR = 4'd0,
@@ -45,11 +34,12 @@ localparam CTRL_R_ADDR = 4'd0,
             EP_R_ADDR = 4'd6;
 
 localparam IDLE = 3'd0,
-            INTEG = 3'd1,
-            NOP = 3'd2,
-            DATA = 3'd3,
-            BLANK = 3'd4,
-            DONE = 3'd5;
+            GET_INTEG_TIME = 3'd1,
+            INTEG = 3'd2,
+            NOP = 3'd3,
+            DATA = 3'd4,
+            BLANK = 3'd5,
+            DONE = 3'd6;
 
 reg [2:0]       state;
 reg [31:0]       integ_time_reg;
@@ -66,52 +56,34 @@ wire            soft_reset;
 reg [31:0] ram[0:15];
 
 assign g11620_clk = clk;
-/*
+
 always @(posedge clk) begin
-    if (~rst_n)begin
-        integ_time_reg <= 'h0;
-    end
-    else if (set_integ_time) begin
-        integ_time_reg <= integ_time_in;
-    end
-end // always @(posedge clk)
-*/
+    start_r <= start_in;
+end
+
 always @(posedge clk) begin
     if (~rst_n) begin
         state <= IDLE;
         reset_o <= 1'b0;
-        //ram_wr <= 1'b0;
-        //cfg_ram_wr_o <= 1'b0;
-        //cfg_ram_rd_o <= 1'b0;
-        //done_o <= 1'b0;
     end // if (~rst_n)
     else begin
         reset_o <= 1'b0;
-        ram_wr <= 1'b0;
-       ram_din <= 'h0;
-        ram_addr <= 'h0;
-        //cfg_ram_wr_o <= 1'b0;
-        //cfg_ram_dout <= 'h0;
-        //cfg_ram_rd_o <= 1'b0;
-        //done_o <= 1'b0;
-        //cfg_ram_addr_o <= 'h0;
+        cfg_ram_rd_o <= 1'b0;
         case(state)
             IDLE: begin
                 if (start_in == 1'b1 && start_r == 1'b0) begin
-                    state <= INTEG;
-                    //cfg_ram_rd_o <= 1'b1;
-                    //cfg_ram_addr_o <= `G11620_INTEG_R_ADDR;
-                    //integ_time_reg <= ram[`G11620_INTEG_R_ADDR];
-                    integ_time_reg <= integ_time_in;
-                    //integ_time_reg <= cfg_ram_din[`G11620_INTEG_R_ADDR];
-                    ram_wr <= 1'b1;
-                    ram_din <= {1'b0,ram[`G11620_CTRL_R_ADDR][30:0]};
-                    ram_addr <= `G11620_CTRL_R_ADDR;
+                    state <= GET_INTEG_TIME;
+                    cfg_ram_rd_o <= 1'b1;
+                    cfg_ram_addr_o <= `G11620_INTEG_R_ADDR;
                 end // if (start == 1'b1 && start_r == 1'b0)
                 clk_cnt <= 'h0;
                 reset_o <= 1'b0;
                 adc_data_cnt <= 'h0;
             end // IDLE:
+            GET_INTEG_TIME: begin
+                state <= INTEG;
+                integ_time_reg <= cfg_ram_din;
+            end // GET_INTEG_TIME:
             INTEG: begin
                 reset_o <= 1'b1;
                 clk_cnt <= clk_cnt + 1'b1;
@@ -121,7 +93,6 @@ always @(posedge clk) begin
                 end // if (clk_cnt == integ_time_reg)
 
                 if (soft_reset) state <= IDLE;
-
             end // INTEG:
             NOP: begin
                 // trig a timer
@@ -144,14 +115,8 @@ always @(posedge clk) begin
                 if (soft_reset) state <= IDLE;
             end // BLANK:
             DONE: begin
-                ram_wr <= 1'b1;
-                ram_din <= {ram[`G11620_CTRL_R_ADDR][31], 1'b1, ram[`G11620_CTRL_R_ADDR][29:0]};
-                ram_addr <= `G11620_CTRL_R_ADDR;
-               // cfg_ram_wr_o <= 1'b1;
-               // ram_din <= {ram[`G11620_CTRL_R_ADDR][31], 1'b1, ram[`G11620_CTRL_R_ADDR][29:0]};
-              //  ram_addr <= `G11620_CTRL_R_ADDR;
                 state <= IDLE;
-               // done_o <= 1'b1;
+                done_o <= 1'b1;
             end
             default: begin
                 state <= IDLE;
@@ -159,23 +124,6 @@ always @(posedge clk) begin
         endcase // state
     end // else
 end // always @(posedge clk)
-
-always @(posedge clk) begin
-    if (ram_wr) ram[ram_addr] <= ram_din;
-    else if (wr_in) ram[addr_in] <= data_in;
-end
-assign ram_dout = ram[addr_in];
-always @(posedge clk) begin
-    rd_data_o <= ram_dout;
-    rd_valid_o <= rd_in;
-end // always @(posedge clk)
-
-assign start = ram[`G11620_CTRL_R_ADDR][31];
-always @(posedge clk) begin
-    start_r <= start_in;
-end // always @(posedge clk)
-
-assign soft_reset = ram[`G11620_CTRL_R_ADDR][29];
 
 // ---- Debug ----------------
 wire [0:0] reset_ila;

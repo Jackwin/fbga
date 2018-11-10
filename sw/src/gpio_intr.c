@@ -30,14 +30,14 @@
     status = XScuGic_Connect(intc, XPAR_FABRIC_AXI_GPIO_0_IP2INTC_IRPT_INTR, (Xil_ExceptionHandler)GpioIntrHandler,
                          (void *)GpioInstancePtr);
     if(status != XST_SUCCESS) return XST_FAILURE;
-    IntcTypeSetup(intc, XPAR_FABRIC_AXI_GPIO_0_IP2INTC_IRPT_INTR, INT_TYPE_HIGHLEVEL );
+    IntcTypeSetup(intc, XPAR_FABRIC_AXI_GPIO_0_IP2INTC_IRPT_INTR, INT_TYPE_RISING_EDGE );
     XGpio_InterruptEnable(GpioInstancePtr, 1);
     XGpio_InterruptGlobalEnable(GpioInstancePtr);
     XScuGic_Enable(intc, XPAR_FABRIC_AXI_GPIO_0_IP2INTC_IRPT_INTR);
     return XST_SUCCESS;
 }
 
- int PlIntrInit(XScuGic intc) {
+ int PLIntrInit(XScuGic intc) {
     int status;
     XScuGic_Config *IntcConfig;
     IntcConfig = XScuGic_LookupConfig(XPAR_PS7_SCUGIC_0_DEVICE_ID);
@@ -50,7 +50,7 @@
 
     Xil_ExceptionEnable();
 
-    status = XScuGic_Connect(&intc, PL_INT_ID, (Xil_ExceptionHandler)PlIntrHandler,
+    status = XScuGic_Connect(&intc, PL_INT_ID, (Xil_ExceptionHandler)PLIntrHandler,
                          (void *)1);
     if(status != XST_SUCCESS) return XST_FAILURE;
     IntcTypeSetup(&intc, PL_INT_ID, INT_TYPE_RISING_EDGE);
@@ -63,14 +63,14 @@
 {
     xil_printf(" GPIO interrupt.\n\r");
     XGpio_InterruptDisable(&Gpio1Output, XGPIO_IR_CH1_MASK);
-    // Acknowledge GPIO interrupts
+    // Acknowledge GPIO interruptsL
    (void) XGpio_InterruptClear(&Gpio1Output, XGPIO_IR_CH1_MASK);
     // Enable GPIO interrupts
     XGpio_InterruptEnable(&Gpio1Output, XGPIO_IR_CH1_MASK);
 
 }
 
- void PlIntrHandler(void *param)
+ void PLIntrHandler(void *param)
 {
     xil_printf("PL interrupt.\n\r");
     cdma_test();

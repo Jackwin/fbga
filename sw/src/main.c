@@ -27,9 +27,9 @@
 /* Instance For GPIO */
 XGpio GpioOutput, ps_ctrl_gpio;
 XAxiCdma_Config *axi_cdma_cfg;
-
+XScuGic intc;
 int main() {
-    XScuGic intc;
+
     XScuTimer timer;
     XAxiCdma axi_cdma;
     int status;
@@ -37,8 +37,9 @@ int main() {
     u8 ps_ctrl_gpio_val = 0;
 
     init_platform();
+/*
     // Initialize GPIO
-    XGpio_Initialize(&ps_ctrl_gpio, XPAR_AXI_GPIO_0_DEVICE_ID); //initialize GPIO IP
+    XGpio_Initialize(&ps_ctrl_gpio, XPAR_PS2PL_GPIO_DEVICE_ID); //initialize GPIO IP
     XGpio_SetDataDirection(&ps_ctrl_gpio, 1, 0x0);            	//set GPIO as output
     // Configure the AD9826
     *(pl_param_buffer + AD9826_REG_ADDR) = 0xc8;
@@ -54,34 +55,36 @@ int main() {
      XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val); //assert
      ps_ctrl_gpio_val = ps_ctrl_gpio_val & ~G11620_START;
      XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val); // de-assert
-
+*/
 
    // XScuTimer_Config *timer_config_ptr;
-    u32 timer_load_value = 0x13D92D3F;
-    u32 timer_device_id = XPAR_XSCUTIMER_0_DEVICE_ID;
+   // u32 timer_load_value = 0x13D92D3F;
+   // u32 timer_device_id = XPAR_XSCUTIMER_0_DEVICE_ID;
     //TimerInit(intc, timer, timer_load_value, timer_device_id);
 
     // PL interrupt
 /*
-    status = XGpio_Initialize(&Gpio1Output, XPAR_AXI_GPIO_1_DEVICE_ID); //initialize GPIO IP
+    status = XGpio_Initialize(&Gpio1Output, XPAR_AXI_GPIO_0_DEVICE_ID); //initialize GPIO IP
     if(status != XST_SUCCESS) return XST_FAILURE;
     XGpio_SetDataDirection(&Gpio1Output, 1, 0xFFFFFFFF);
     GpioIntrInit(&intc, &Gpio1Output);
 */
-    PlIntrInit(intc);
+    PLIntrInit(intc);
 
 
-    //XAxiCdma_SetupIntr(&intc, &axi_cdma,
-    	//	XPAR_AXICDMA_0_DEVICE_ID, XPAR_FABRIC_AXICDMA_0_VEC_ID);
-    // cdma_test();
+   // XAxiCdma_SetupIntr(&intc, &axi_cdma,
+    //		XPAR_AXICDMA_0_DEVICE_ID, XPAR_FABRIC_AXICDMA_0_VEC_ID);
+     //cdma_test();
 
 
     while(1){
+    	/*
     	for (u32 Ledwidth = 0x0; Ledwidth < 2; Ledwidth++) {
-    		XGpio_DiscreteWrite(&GpioOutput, 1, 1 << Ledwidth);
+    		XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, 1 << Ledwidth);
     		usleep(1000 * 1000); //sleep 1s
-    		XGpio_DiscreteClear(&GpioOutput, 1, 1 << Ledwidth);
+    		XGpio_DiscreteClear(&ps_ctrl_gpio, 1, 1 << Ledwidth);
     	}
+    	*/
     }
     return 0;
 
