@@ -1,4 +1,4 @@
-## FGBA
+## FBGA
 A design based on Zynq-7020, utilizing AD9826 and G11620
 
 ## Hierarchy
