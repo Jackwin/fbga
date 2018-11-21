@@ -72,8 +72,9 @@ set_property IOSTANDARD LVCMOS33 [get_ports {g11620_clk_o}]
 set_property PACKAGE_PIN AB16 [get_ports  {g11620_cf_sel2_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {g11620_cf_sel2_o}]
 
-#J15 pin5
-set_property PACKAGE_PIN U20 [get_ports  {cdsclk2_o}]
+#J15 pin5  V1.0
+# B33_L18_P V2.0
+set_property PACKAGE_PIN AA16 [get_ports  {cdsclk2_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {cdsclk2_o}]
 
 

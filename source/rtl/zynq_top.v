@@ -262,6 +262,12 @@ always @(posedge clk_5m) begin
 end // always @(posedge clk_5m)
 */
 // --------------- ad9826 logics -----------------------------
+wire ad9826_start;
+vio_data_gen ad9826_vio_inst (
+    .clk       (clk_5m),
+    .probe_out0(ad9826_start),
+    .probe_out1()
+    );
 
 adc9826 adc9826_inst (
     .clk        (clk_5m),
@@ -270,7 +276,7 @@ adc9826 adc9826_inst (
     .adc_data_in(adc_data_in),
     .adc_oeb    (adc_oeb),
     .cfg_done_in (adc_cfg_done),
-    .adc_start_in(g11620_start_in),
+    .adc_start_in(g11620_start_in | ad9826_start),
     .adc_done_out(adc_done),
     .ram_addr_o  (ad9826_ram_addr),
     .ram_data_o  (ad9826_ram_dout),

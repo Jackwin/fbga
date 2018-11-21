@@ -61,62 +61,62 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_smc_0/zynq_sys_axi_smc_0.xci">
-          <Proxy FileSetName="zynq_sys_axi_smc_0"/>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_rst_ps7_0_50M_0/zynq_sys_rst_ps7_0_50M_0.xci">
+          <Proxy FileSetName="zynq_sys_rst_ps7_0_50M_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_cdma_gp_ram_ctrl_0/zynq_sys_cdma_gp_ram_ctrl_0.xci">
           <Proxy FileSetName="zynq_sys_cdma_gp_ram_ctrl_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_gpio_0_0/zynq_sys_axi_gpio_0_0.xci">
-          <Proxy FileSetName="zynq_sys_axi_gpio_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_bram_ctrl_0_2/zynq_sys_axi_bram_ctrl_0_2.xci">
-          <Proxy FileSetName="zynq_sys_axi_bram_ctrl_0_2"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_auto_pc_3/zynq_sys_auto_pc_3.xci">
-          <Proxy FileSetName="zynq_sys_auto_pc_3"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_blk_mem_gen_0_1/zynq_sys_blk_mem_gen_0_1.xci">
-          <Proxy FileSetName="zynq_sys_blk_mem_gen_0_1"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_cdma_gp_ram_0/zynq_sys_cdma_gp_ram_0.xci">
-          <Proxy FileSetName="zynq_sys_cdma_gp_ram_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_rst_ps7_0_50M_0/zynq_sys_rst_ps7_0_50M_0.xci">
-          <Proxy FileSetName="zynq_sys_rst_ps7_0_50M_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_bram_ctrl_0_1/zynq_sys_axi_bram_ctrl_0_1.xci">
-          <Proxy FileSetName="zynq_sys_axi_bram_ctrl_0_1"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_gpio_1_0/zynq_sys_axi_gpio_1_0.xci">
-          <Proxy FileSetName="zynq_sys_axi_gpio_1_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_processing_system7_0_0/zynq_sys_processing_system7_0_0.xci">
-          <Proxy FileSetName="zynq_sys_processing_system7_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_blk_mem_gen_0_0/zynq_sys_blk_mem_gen_0_0.xci">
-          <Proxy FileSetName="zynq_sys_blk_mem_gen_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_auto_pc_2/zynq_sys_auto_pc_2.xci">
-          <Proxy FileSetName="zynq_sys_auto_pc_2"/>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_xbar_0/zynq_sys_xbar_0.xci">
+          <Proxy FileSetName="zynq_sys_xbar_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_bram_ctrl_0_0/zynq_sys_axi_bram_ctrl_0_0.xci">
           <Proxy FileSetName="zynq_sys_axi_bram_ctrl_0_0"/>
         </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_blk_mem_gen_0_0/zynq_sys_blk_mem_gen_0_0.xci">
+          <Proxy FileSetName="zynq_sys_blk_mem_gen_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_blk_mem_gen_0_1/zynq_sys_blk_mem_gen_0_1.xci">
+          <Proxy FileSetName="zynq_sys_blk_mem_gen_0_1"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_bram_ctrl_0_1/zynq_sys_axi_bram_ctrl_0_1.xci">
+          <Proxy FileSetName="zynq_sys_axi_bram_ctrl_0_1"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_cdma_gp_ram_0/zynq_sys_cdma_gp_ram_0.xci">
+          <Proxy FileSetName="zynq_sys_cdma_gp_ram_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_processing_system7_0_0/zynq_sys_processing_system7_0_0.xci">
+          <Proxy FileSetName="zynq_sys_processing_system7_0_0"/>
+        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_cdma_0_0/zynq_sys_axi_cdma_0_0.xci">
           <Proxy FileSetName="zynq_sys_axi_cdma_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_smc_0/zynq_sys_axi_smc_0.xci">
+          <Proxy FileSetName="zynq_sys_axi_smc_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_xlconcat_0_0/zynq_sys_xlconcat_0_0.xci">
+          <Proxy FileSetName="zynq_sys_xlconcat_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_auto_pc_1/zynq_sys_auto_pc_1.xci">
           <Proxy FileSetName="zynq_sys_auto_pc_1"/>
         </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_gpio_1_0/zynq_sys_axi_gpio_1_0.xci">
+          <Proxy FileSetName="zynq_sys_axi_gpio_1_0"/>
+        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_auto_pc_0/zynq_sys_auto_pc_0.xci">
           <Proxy FileSetName="zynq_sys_auto_pc_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_xbar_0/zynq_sys_xbar_0.xci">
-          <Proxy FileSetName="zynq_sys_xbar_0"/>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_auto_pc_2/zynq_sys_auto_pc_2.xci">
+          <Proxy FileSetName="zynq_sys_auto_pc_2"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_xlconcat_0_0/zynq_sys_xlconcat_0_0.xci">
-          <Proxy FileSetName="zynq_sys_xlconcat_0_0"/>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_auto_pc_3/zynq_sys_auto_pc_3.xci">
+          <Proxy FileSetName="zynq_sys_auto_pc_3"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_bram_ctrl_0_2/zynq_sys_axi_bram_ctrl_0_2.xci">
+          <Proxy FileSetName="zynq_sys_axi_bram_ctrl_0_2"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zynq_sys.bd" FileRelPathName="ip/zynq_sys_axi_gpio_0_0/zynq_sys_axi_gpio_0_0.xci">
+          <Proxy FileSetName="zynq_sys_axi_gpio_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/../source/ip/ila_data_gen/ila_data_gen.xci">

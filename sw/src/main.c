@@ -37,7 +37,7 @@ int main() {
     u8 ps_ctrl_gpio_val = 0;
 
     init_platform();
-/*
+
     // Initialize GPIO
     XGpio_Initialize(&ps_ctrl_gpio, XPAR_PS2PL_GPIO_DEVICE_ID); //initialize GPIO IP
     XGpio_SetDataDirection(&ps_ctrl_gpio, 1, 0x0);            	//set GPIO as output
@@ -55,7 +55,7 @@ int main() {
      XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val); //assert
      ps_ctrl_gpio_val = ps_ctrl_gpio_val & ~G11620_START;
      XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val); // de-assert
-*/
+
 
    // XScuTimer_Config *timer_config_ptr;
    // u32 timer_load_value = 0x13D92D3F;
@@ -69,7 +69,7 @@ int main() {
     XGpio_SetDataDirection(&Gpio1Output, 1, 0xFFFFFFFF);
     GpioIntrInit(&intc, &Gpio1Output);
 */
-    PLIntrInit(intc);
+    //PLIntrInit(intc);
 
 
    // XAxiCdma_SetupIntr(&intc, &axi_cdma,
