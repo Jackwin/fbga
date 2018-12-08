@@ -50,7 +50,7 @@ always @(posedge clk) begin
     end // else
 end // always @(posedge clk)
 assign adcclk_i = (clk_cnt < 6'd20) ? 1'b0 : 1'b1;
-assign cdsclk2_i = (clk_cnt > 6'd16 && clk_cnt < 6'd25) ? 1'b1 : 1'b0;
+assign cdsclk2_i = (clk_cnt > 6'd0 && clk_cnt < 6'd9) ? 1'b1 : 1'b0;
 assign sclk_i = (clk_cnt2 < 7'd60) ? 1'b0 : 1'b1;
 always @(posedge clk) begin
     adcclk <= adcclk_i;

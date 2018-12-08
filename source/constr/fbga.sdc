@@ -13,11 +13,11 @@ set_property IOSTANDARD LVCMOS33 [get_ports {rstn_in}]
 #IO2_10P B13_L14_P
 set_property PACKAGE_PIN AA7 [get_ports  {clk_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {clk_o}]
-#IO2_8N B13_L10_N
-set_property PACKAGE_PIN AA6 [get_ports  {bit_o}]
+#IO2_8N B13_L10_N -> B35_15_p
+set_property PACKAGE_PIN M21 [get_ports  {bit_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {bit_o}]
-#IO2_12P B13_L16_P
-set_property PACKAGE_PIN AB5 [get_ports  {bit_valid_o}]
+#IO2_12P B13_L16_P -> B34_15_N
+set_property PACKAGE_PIN M22 [get_ports  {bit_valid_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {bit_valid_o}]
 
 ## BANK 33 AD9826
@@ -57,12 +57,14 @@ set_property IOSTANDARD LVCMOS33 [get_ports {sclk_o}]
 
 ## G11620
 
-#B33_L18_N -> B33_L13_N
-set_property PACKAGE_PIN W18 [get_ports  {g11620_start_in}]
+#B33_L18_N -> B33_L13_N w18 V1.0
+#B33_L12_P Y18
+set_property PACKAGE_PIN Y18 [get_ports  {g11620_start_in}]
 set_property IOSTANDARD LVCMOS33 [get_ports {g11620_start_in}]
 
-#B33_L12_N -> B33_L12_P
-set_property PACKAGE_PIN Y18 [get_ports  {g11620_reset_o}]
+#B33_L12_N -> B33_L12_P Y18 V1.0
+#B33_L13_N W17 v2.0
+set_property PACKAGE_PIN W18 [get_ports  {g11620_reset_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {g11620_reset_o}]
 #B33_L12_P -> B33_L13_P
 set_property PACKAGE_PIN W17 [get_ports  {g11620_clk_o}]
@@ -73,7 +75,7 @@ set_property PACKAGE_PIN AB16 [get_ports  {g11620_cf_sel2_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {g11620_cf_sel2_o}]
 
 #J15 pin5  V1.0
-# B33_L18_P V2.0
+#B33_L18_P V2.0
 set_property PACKAGE_PIN AA16 [get_ports  {cdsclk2_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {cdsclk2_o}]
 

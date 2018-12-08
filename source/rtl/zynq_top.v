@@ -17,6 +17,7 @@ module zynq_top (
     output      g11620_reset_o,
     output      g11620_clk_o,
     output      g11620_cf_sel2_o,
+
     input       g11620_start_in, // from g11620
 
     output[1:0] gpio_led_0_tri_o
@@ -161,7 +162,7 @@ vio_reg vio_reg_inst (
   .probe_in0(locked)  // input wire [31 : 0] probe_in0
 );
 // ------------------------- Serilalizer ---- ------------------------
-/*
+
 vio_data_gen vio_data_gen_inst (
     .clk       (clk_37m5),
     .probe_out0(ser_data_gen_vio),
@@ -202,12 +203,12 @@ oserdes oserdes_inst (
     .start        (ser_start),
     .length_in    (ser_length),
     .bit_o        (bit_o),
-    .clk_o        (clk_o),
+    .clk_o        (),
     .valid_o      (bit_valid_o)
     );
-*/
+
 // --------------- g11620 -----------------------------------
-assign g11620_cf_sel2_o = 1'b0;
+assign g11620_cf_sel2_o = 1'b1;
 wire [0:0]      g11620_integ_start_vio;
 reg             g11620_integ_start_p, g11620_integ_start_r;
 wire [9:0]      g11620_integ_time;

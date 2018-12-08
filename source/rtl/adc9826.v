@@ -39,6 +39,7 @@ reg [1:0]   state;
 wire        iddr_ce;
 reg         iddr_rst;
 wire [7:0]  iddr_q1/*synthesis keep*/, iddr_q2/*synthesis keep*/;
+wire [15:0] iddr_data/*synthesis keep*/;
 reg [7:0]   iddr_q2_r;
 reg [1:0]   delay_cnt;
 reg         adc_data_valid, adc_data_valid_r;
@@ -200,12 +201,13 @@ assign ram_data_o = {adc_data_r, adc_data};
 assign iddr_ce_ila[0] = iddr_ce;
 assign cfg_done_ila[0] = cfg_done;
 assign adc_data_valid_ila[0] = adc_data_valid_r;
+assign iddr_data = {iddr_q2_r,iddr_q1};
 
 ila_adc ila_adc_inst (
     .clk(clk), // input wire clk
     .probe0(state), // input wire [1:0]  probe0
     .probe1(adc_data_in), // input wire [7:0]  probe1
-    .probe2(iddr_q1), // input wire [7:0]  probe2
+    .probe2(iddr_data), // input wire [7:0]  probe2
     .probe3(iddr_q2_r), // input wire [7:0]  probe3
     .probe4(delay_cnt), // input wire [1:0]  probe4
     .probe5(adc_data_cnt), // input wire [8:0]  probe5

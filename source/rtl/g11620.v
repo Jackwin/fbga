@@ -55,7 +55,7 @@ wire            soft_reset;
 
 reg [31:0] ram[0:15];
 
-assign g11620_clk = clk;
+assign g11620_clk = ~clk;
 
 always @(posedge clk) begin
     start_r <= start_in;

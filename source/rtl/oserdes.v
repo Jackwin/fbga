@@ -1,21 +1,21 @@
 `timescale 1ns/1ps
 
 module oserdes (
-    input       wr_clk,    // Clock
-    input       wr_rst,  // Asynchronous reset active low
+    input           wr_clk,    // Clock
+    input           wr_rst,  // Asynchronous reset active low
 
-    input [7:0] data_in,
-    input       data_valid_in,
+    input [7:0]     data_in,
+    input           data_valid_in,
 
     // Serilizer interface
-    input       rd_clk,
-    input       rd_rst,
-    input       start,
-    input [7:0] length_in,
+    input           rd_clk,
+    input           rd_rst,
+    input           start,      // start to serialize the data
+    input [7:0]     length_in,  // The number of data to send
 
-    output      bit_o,
-    output      clk_o,
-    output reg     valid_o
+    output          bit_o,  // The serial bit output
+    output          clk_o,
+    output reg      valid_o
 
 );
 localparam IDLE = 1'b0, READ = 1'b1;
