@@ -1,6 +1,7 @@
 #include "gpio_intr.h"
 #include "cdma.h"
 
+XGpio Gpio1Output;
  void IntcTypeSetup(XScuGic *InstancePtr, u32 intId, u32 intType)
 
 {
@@ -70,6 +71,7 @@
 
 }
 
+ // PL interrupt function corresponding to the signal intr_in in zynq_sys_wrapper
  void PLIntrHandler(void *param)
 {
     xil_printf("PL interrupt.\n\r");

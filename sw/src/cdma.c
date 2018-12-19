@@ -171,7 +171,7 @@ int cdma_test(void)
     }
     XScuTimer_Stop(&Timer);
     CntValue2 = XScuTimer_GetCounterValue(&Timer);
-    printf ("CntValue2 is %x.\n", CntValue2);
+   // printf ("CntValue2 is %x.\n", CntValue2);
     int duration = (CntValue1-CntValue2)*3/1000;
     int rate = TOTAL_NUM * 4 / duration;
     printf("DMA from BRAM to DDR is %d MB/s\n\r", rate);  // Timer fre is 333.33MHz

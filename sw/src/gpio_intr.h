@@ -13,7 +13,7 @@
 #define INT_CFG0_OFFSET         0x00000C00
 #define PL_INT_ID               XPS_FPGA1_INT_ID
 
-XGpio Gpio1Output;
+
  void IntcTypeSetup(XScuGic *InstancePtr, u32 intId, u32 intType);
  int GpioIntrInit(XScuGic *intc, XGpio *GpioInstancePtr);
  int PLIntrInit(XScuGic intc);

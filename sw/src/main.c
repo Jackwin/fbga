@@ -24,6 +24,8 @@
 #define TOTAL_NUM 64
 #define BUF_LEN (TOTAL_NUM * 4) // Byte
 
+extern XGpio Gpio1Output;
+
 /* Instance For GPIO */
 XGpio GpioOutput, ps_ctrl_gpio;
 XAxiCdma_Config *axi_cdma_cfg;
@@ -33,7 +35,7 @@ int main() {
     XScuTimer timer;
     XAxiCdma axi_cdma;
     int status;
-    u32 *pl_param_buffer = ( u32*)PL_PARAM_RAM_ADDR;
+
     u8 ps_ctrl_gpio_val = 0;
 
     init_platform();
@@ -50,7 +52,8 @@ int main() {
     // XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val);
 
      // Configure the G11620 space
-     *(pl_param_buffer + G11620_INTEG_R_ADDR) = 0x8;
+     u32 *pl_param_buffer = ( u32*)PL_PARAM_RAM_ADDR;
+     *(pl_param_buffer + G11620_INTEG_R_ADDR) = 0xfff0;
      ps_ctrl_gpio_val = ps_ctrl_gpio_val | G11620_START;
      XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val); //assert
      ps_ctrl_gpio_val = ps_ctrl_gpio_val & ~G11620_START;
@@ -62,14 +65,14 @@ int main() {
    // u32 timer_device_id = XPAR_XSCUTIMER_0_DEVICE_ID;
     //TimerInit(intc, timer, timer_load_value, timer_device_id);
 
-    // PL interrupt
-/*
+
+    // GPIO interrupt and wil be used as the indicator of G11620 operation done.
     status = XGpio_Initialize(&Gpio1Output, XPAR_AXI_GPIO_0_DEVICE_ID); //initialize GPIO IP
     if(status != XST_SUCCESS) return XST_FAILURE;
     XGpio_SetDataDirection(&Gpio1Output, 1, 0xFFFFFFFF);
     GpioIntrInit(&intc, &Gpio1Output);
-*/
-    //PLIntrInit(intc);
+    // Direct PL interrupt. Will trig the DMA operation moving data from PL ram to DDR3 on PS side
+    PLIntrInit(intc);
 
 
    // XAxiCdma_SetupIntr(&intc, &axi_cdma,

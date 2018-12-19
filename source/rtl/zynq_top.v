@@ -421,7 +421,9 @@ zynq_sys_wrapper zynq_system_wrapper_inst (
     .plparam_ram_we  (plparam_ram_wr),
     .plparam_ram_dout(plparam_ram_dout),
 
+    // The direct interrupt input
     .intr_in          (pldata_gen_vio),
+    // The GPIO interrupt input
     .GPIO_in_tri_i    (g11620_done)
 
 
