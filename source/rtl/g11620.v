@@ -74,7 +74,7 @@ always @(posedge clk) begin
                 if (start_in == 1'b1 && start_r == 1'b0) begin
                     state <= GET_INTEG_TIME;
                     cfg_ram_rd_o <= 1'b1;
-                    cfg_ram_addr_o <= `G11620_INTEG_R_ADDR;
+                    cfg_ram_addr_o <= {3'h0,`G11620_INTEG_R_ADDR};
                 end // if (start == 1'b1 && start_r == 1'b0)
                 clk_cnt <= 'h0;
                 reset_o <= 1'b0;
@@ -82,7 +82,7 @@ always @(posedge clk) begin
             end // IDLE:
             GET_INTEG_TIME: begin
                 state <= INTEG;
-                integ_time_reg <= cfg_ram_din;
+                integ_time_reg <= cfg_ram_din - 1'b1;
             end // GET_INTEG_TIME:
             INTEG: begin
                 reset_o <= 1'b1;

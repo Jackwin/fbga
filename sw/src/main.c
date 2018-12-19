@@ -41,16 +41,16 @@ int main() {
     // Initialize GPIO
     XGpio_Initialize(&ps_ctrl_gpio, XPAR_PS2PL_GPIO_DEVICE_ID); //initialize GPIO IP
     XGpio_SetDataDirection(&ps_ctrl_gpio, 1, 0x0);            	//set GPIO as output
-    // Configure the AD9826
-    *(pl_param_buffer + AD9826_REG_ADDR) = 0xc8;
-    *(pl_param_buffer + AD9826_MUX_ADDR) = 0xfff0; // 8f0
-     ps_ctrl_gpio_val = ps_ctrl_gpio_val | AD9826_CFG_START;
-     XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val);  //Rising edge of AD9826_CFG_START triggers the ad9826 configuration
-     ps_ctrl_gpio_val = ps_ctrl_gpio_val & ~AD9826_CFG_START;
-     XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val);
+    // Configure the AD9826. Move the Ad9826 configuration to PL
+    //*(pl_param_buffer + AD9826_REG_ADDR) = 0xc8;
+    //*(pl_param_buffer + AD9826_MUX_ADDR) = 0xfff0; // 8f0
+    // ps_ctrl_gpio_val = ps_ctrl_gpio_val | AD9826_CFG_START;
+    // XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val);  //Rising edge of AD9826_CFG_START triggers the ad9826 configuration
+    // ps_ctrl_gpio_val = ps_ctrl_gpio_val & ~AD9826_CFG_START;
+    // XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val);
 
      // Configure the G11620 space
-     *(pl_param_buffer + G11620_INTEG_R_ADDR) = 0x700;
+     *(pl_param_buffer + G11620_INTEG_R_ADDR) = 0x8;
      ps_ctrl_gpio_val = ps_ctrl_gpio_val | G11620_START;
      XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val); //assert
      ps_ctrl_gpio_val = ps_ctrl_gpio_val & ~G11620_START;
