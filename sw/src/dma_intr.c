@@ -10,7 +10,11 @@ volatile static int error = 0;	/* Dma Bus Error occurs */
 #define BUFFER_BYTESIZE		64
 volatile static u8 SrcBuffer[BUFFER_BYTESIZE] __attribute__ ((aligned (64)));
 volatile static u8 DestBuffer[BUFFER_BYTESIZE] __attribute__ ((aligned (64)));
-
+/*
+static int  SetupIntrSystem(XScuGic  *IntcInstancePtr, XAxiCdma *InstancePtr, u32 IntrId);
+static void CallBack(void *CallBackRef, u32 IrqMask, int *IgnorePtr);
+static void DisableIntrSystem(XScuGic *IntcInstancePtr, u32 IntrId);
+*/
 int XAxiCdma_SetupIntr(XScuGic *IntcInstancePtr, XAxiCdma *InstancePtr,
     u16 DeviceId, u32 IntrId) {
     XAxiCdma_Config *CfgPtr;
@@ -77,9 +81,6 @@ int XAxiCdma_SetupIntr(XScuGic *IntcInstancePtr, XAxiCdma *InstancePtr,
     	    			break;
     	    		}
     	}
-
-
-
     	   // Xil_DCacheFlush();
     	    while(!Done && !error){}
 

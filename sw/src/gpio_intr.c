@@ -1,17 +1,16 @@
 #include "gpio_intr.h"
 #include "cdma.h"
 
-XGpio Gpio1Output;
+extern XGpio intr_gpio;
+extern u16 dma_done;
  void IntcTypeSetup(XScuGic *InstancePtr, u32 intId, u32 intType)
 
 {
     int mask;
     intType &= INT_TYPE_MASK;
     mask = XScuGic_DistReadReg(InstancePtr, INT_CFG0_OFFSET + (intId/16)*4);
-    xil_printf("Mask is %x\n\r", mask);
     mask &= ~(INT_TYPE_MASK << (intId%16)*2);
     mask |= intType << ((intId%16)*2);
-    xil_printf("Mask is %x\n\r", mask);
     XScuGic_DistWriteReg(InstancePtr, INT_CFG0_OFFSET + (intId/16)*4, mask);
 
 }
@@ -63,11 +62,13 @@ XGpio Gpio1Output;
  void GpioIntrHandler(void *param)
 {
     xil_printf(" GPIO interrupt.\n\r");
-    XGpio_InterruptDisable(&Gpio1Output, XGPIO_IR_CH1_MASK);
+    XGpio_InterruptDisable(&intr_gpio, XGPIO_IR_CH1_MASK);
     // Acknowledge GPIO interruptsL
-   (void) XGpio_InterruptClear(&Gpio1Output, XGPIO_IR_CH1_MASK);
+   XGpio_InterruptClear(&intr_gpio, XGPIO_IR_CH1_MASK);
     // Enable GPIO interrupts
-    XGpio_InterruptEnable(&Gpio1Output, XGPIO_IR_CH1_MASK);
+    XGpio_InterruptEnable(&intr_gpio, XGPIO_IR_CH1_MASK);
+    cdma_test();
+    //dma_done = 1;
 
 }
 
@@ -75,6 +76,7 @@ XGpio Gpio1Output;
  void PLIntrHandler(void *param)
 {
     xil_printf("PL interrupt.\n\r");
-    cdma_test();
+
+    //XScuGic_Enable(&intc, PL_INT_ID);
 
 }

@@ -66,7 +66,7 @@
 
 static XAxiCdma_Config *axi_cdma_cfg;
 static XAxiCdma axi_cdma;
-
+u16 dma_done;
 /* Instance For GPIO */
 //XGpio GpioOutput;
 
@@ -102,23 +102,23 @@ int cdma_test(void)
     u32 i,k ,data = 0;
     int status;
     volatile int CntValue1,CntValue2;
-
-    // PL_BRAM_ADDR is the BRAM address used for the DMA test, which is accessable via GP(BRAM_GP0_ADDR)
-    //u32 *tx_buffer = (u32 *) PL_BRAM_ADDR;
+    dma_done = 0;
+    /*
+    // BRAM_GP0_ADDR is the BRAM address used for the DMA test, which is accessable via GP(BRAM_GP0_ADDR)
     // BRAM_GP0_ADDR is used to initialize the PL_BRAM_ADDR contents
      u32 *rd_ram    = (u32 *) BRAM_GP0_ADDR;
-    // PL_DATA_ADDR is the address for the ADC data in PL
-    u32 *tx_buffer = (u32 *) PL_DATA_ADDR;
-    // DDR address
-    u32 *rx_buffer = (u32 *) PS_DDR_ADDR;
-    init_platform();
-
-    // Initialize the PL_BRAM_ADDR contents
+      // Initialize the PL_BRAM_ADDR contents
     data = 0;
      for (i = 0; i < TOTAL_NUM; i++) {
         data = data + 1;
         *(rd_ram + i) = data;
     }
+    */
+    // PL_DATA_ADDR is the address for the ADC data in PL
+    u32 *tx_buffer = (u32 *) PL_DATA_ADDR;
+    // DDR address
+    u32 *rx_buffer = (u32 *) PS_DDR_ADDR;
+   // init_platform();
 
     status = hs_timer();
     if (status != XST_SUCCESS) {
@@ -163,13 +163,14 @@ int cdma_test(void)
     }
     Xil_DCacheFlush();
 
-
     // Wait until core isn't busy
     if (XAxiCdma_IsBusy(&axi_cdma)) {
         printf("AXI CDMA is busy...\n\r");
         while (XAxiCdma_IsBusy(&axi_cdma));
     }
     XScuTimer_Stop(&Timer);
+
+
     CntValue2 = XScuTimer_GetCounterValue(&Timer);
    // printf ("CntValue2 is %x.\n", CntValue2);
     int duration = (CntValue1-CntValue2)*3/1000;
@@ -183,5 +184,6 @@ int cdma_test(void)
          k = *(rx_buffer + i);
          xil_printf("The DMA read from address = %2d, the read value = %8x-----------------------\n\r",i,k);
      }
+     dma_done = 1;
      return 1;
 }

@@ -423,8 +423,9 @@ zynq_sys_wrapper zynq_system_wrapper_inst (
 
     // The direct interrupt input
     .intr_in          (pldata_gen_vio),
+   // .intr_in          (g11620_done),
     // The GPIO interrupt input
-    .GPIO_in_tri_i    (g11620_done)
+    .GPIO_in_tri_i    (g11620_done | pldata_gen_vio)
 
 
     );

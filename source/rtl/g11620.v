@@ -42,9 +42,9 @@ localparam IDLE = 3'd0,
             DONE = 3'd6;
 
 reg [2:0]       state;
-reg [31:0]       integ_time_reg;
+reg [31:0]      integ_time_reg;
 reg [8:0]       adc_data_cnt;
-reg [31:0]       clk_cnt;
+reg [31:0]      clk_cnt;
 reg             start_r;
 wire            start;
 reg [31:0]      ram_din;
@@ -69,6 +69,7 @@ always @(posedge clk) begin
     else begin
         reset_o <= 1'b0;
         cfg_ram_rd_o <= 1'b0;
+        done_o <= 1'b0;
         case(state)
             IDLE: begin
                 if (start_in == 1'b1 && start_r == 1'b0) begin
@@ -145,7 +146,7 @@ ila_g11620 ila_g11620_inst (
     .probe2(start_ila), // input wire [0:0]  probe2
     .probe3(clk_cnt[9:0]), // input wire [9:0]  probe3
     .probe4(adc_data_cnt), // input wire [8:0]  probe4
-    .probe5(ram_rd_ila),
+    .probe5(done_o),
     .probe6(integ_time_reg)
 );
 

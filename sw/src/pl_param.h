@@ -5,8 +5,8 @@
  *      Author: chunjiew
  */
 
-#ifndef SRC_PL_PARAM_H_
-#define SRC_PL_PARAM_H_
+#ifndef PL_PARAM_H_
+#define PL_PARAM_H_
 
 #define AD9826_REG_ADDR 0
 #define AD9826_MUX_ADDR 1
@@ -29,4 +29,4 @@
 #define G11620_SOFT_START 1 << 3
 #define G11620_START 1 << 4
 
-#endif /* SRC_PL_PARAM_H_ */
+#endif /* PL_PARAM_H_ */

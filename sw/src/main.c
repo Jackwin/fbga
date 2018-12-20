@@ -12,31 +12,21 @@
 #include "gpio_intr.h"
 #include "cdma.h"
 #include "pl_param.h"
+#include "main.h"
+#include "g11620.h"
 
-#define TIMER_LOAD_VALUE    0xFFFFFFFF
-#define CDMA_RAM_ADDR 0xC2000000
-#define PLDATA_RAM_ADDR 0xc4000000
-
-#define PL_PARAM_RAM_ADDR 0x40000000
-#define GP_RAM_ADDR 0x42000000
-#define PS_DDR_ADDR 0x10000000
-
-#define TOTAL_NUM 64
-#define BUF_LEN (TOTAL_NUM * 4) // Byte
-
-extern XGpio Gpio1Output;
-
+XGpio intr_gpio;
 /* Instance For GPIO */
-XGpio GpioOutput, ps_ctrl_gpio;
+XGpio  ps_ctrl_gpio;
 XAxiCdma_Config *axi_cdma_cfg;
 XScuGic intc;
 int main() {
 
-    XScuTimer timer;
-    XAxiCdma axi_cdma;
+//    XScuTimer timer;
+  //  XAxiCdma axi_cdma;
     int status;
 
-    u8 ps_ctrl_gpio_val = 0;
+  //  u8 ps_ctrl_gpio_val = 0;
 
     init_platform();
 
@@ -52,6 +42,7 @@ int main() {
     // XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val);
 
      // Configure the G11620 space
+/*
      u32 *pl_param_buffer = ( u32*)PL_PARAM_RAM_ADDR;
      *(pl_param_buffer + G11620_INTEG_R_ADDR) = 0xfff0;
      ps_ctrl_gpio_val = ps_ctrl_gpio_val | G11620_START;
@@ -59,36 +50,34 @@ int main() {
      ps_ctrl_gpio_val = ps_ctrl_gpio_val & ~G11620_START;
      XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, ps_ctrl_gpio_val); // de-assert
 
-
-   // XScuTimer_Config *timer_config_ptr;
-   // u32 timer_load_value = 0x13D92D3F;
-   // u32 timer_device_id = XPAR_XSCUTIMER_0_DEVICE_ID;
-    //TimerInit(intc, timer, timer_load_value, timer_device_id);
-
-
+*/
     // GPIO interrupt and wil be used as the indicator of G11620 operation done.
-    status = XGpio_Initialize(&Gpio1Output, XPAR_AXI_GPIO_0_DEVICE_ID); //initialize GPIO IP
+
+    status = XGpio_Initialize(&intr_gpio, XPAR_AXI_GPIO_0_DEVICE_ID); //initialize GPIO IP
     if(status != XST_SUCCESS) return XST_FAILURE;
-    XGpio_SetDataDirection(&Gpio1Output, 1, 0xFFFFFFFF);
-    GpioIntrInit(&intc, &Gpio1Output);
+    XGpio_SetDataDirection(&intr_gpio, 1, 0xFFFFFFFF);
+    GpioIntrInit(&intc, &intr_gpio);
+
+
     // Direct PL interrupt. Will trig the DMA operation moving data from PL ram to DDR3 on PS side
-    PLIntrInit(intc);
+    // PL intr cannot work well with G11620ConsecInteg function. It's weird!!
+  // PLIntrInit(intc);
 
-
-   // XAxiCdma_SetupIntr(&intc, &axi_cdma,
-    //		XPAR_AXICDMA_0_DEVICE_ID, XPAR_FABRIC_AXICDMA_0_VEC_ID);
-     //cdma_test();
-
+    u16 integ_time = 10;
+    u16 consec_times = 1000;
+   G11620ConsecInteg(integ_time, consec_times);
 
     while(1){
-    	/*
-    	for (u32 Ledwidth = 0x0; Ledwidth < 2; Ledwidth++) {
-    		XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, 1 << Ledwidth);
-    		usleep(1000 * 1000); //sleep 1s
-    		XGpio_DiscreteClear(&ps_ctrl_gpio, 1, 1 << Ledwidth);
-    	}
-    	*/
+
+        	for (u32 Ledwidth = 0x0; Ledwidth < 2; Ledwidth++) {
+        		XGpio_DiscreteWrite(&ps_ctrl_gpio, 1, 1 << Ledwidth);
+        		usleep(1000 * 1000); //sleep 1s
+        		XGpio_DiscreteClear(&ps_ctrl_gpio, 1, 1 << Ledwidth);
+        	}
+
     }
+
+
     return 0;
 
 }
