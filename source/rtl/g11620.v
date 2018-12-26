@@ -147,7 +147,7 @@ ila_g11620 ila_g11620_inst (
     .probe3(clk_cnt[9:0]), // input wire [9:0]  probe3
     .probe4(adc_data_cnt), // input wire [8:0]  probe4
     .probe5(done_o),
-    .probe6(integ_time_reg)
+    .probe6(cfg_ram_din)
 );
 
 endmodule

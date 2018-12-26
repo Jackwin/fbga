@@ -1,0 +1,15 @@
+#ifndef MAIN_H
+#define MAIN_H
+
+#define TIMER_LOAD_VALUE    0xFFFFFFFF
+#define CDMA_RAM_ADDR 0xC2000000
+#define PLDATA_RAM_ADDR 0xc4000000
+
+#define PL_PARAM_RAM_ADDR 0x40000000
+#define GP_RAM_ADDR 0x42000000
+#define PS_DDR_ADDR 0x10000000
+
+#define TOTAL_NUM 64
+#define BUF_LEN (TOTAL_NUM * 4) // Byte
+
+#endif
