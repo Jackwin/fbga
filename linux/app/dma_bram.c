@@ -96,9 +96,6 @@
 #define DDR_MAP_MASK (DDR_MAP_SIZE - 1)
 
 #define DDR_WRITE_OFFSET 0x10000000
-
-
-
 #define BUFFER_BYTESIZE     4096  // Length of the buffers for DMA transfer
 
 int main()

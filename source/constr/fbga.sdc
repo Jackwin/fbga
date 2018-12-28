@@ -1,7 +1,17 @@
 
+set_property PACKAGE_PIN C20 [get_ports  {led[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[0]}]
+set_property PACKAGE_PIN D20 [get_ports  {led[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[1]}]
+set_property PACKAGE_PIN D18 [get_ports  {led[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[2]}]
+#set_property PACKAGE_PIN C19 [get_ports  {led[3]}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {led[3]}]
+
+
 set_property PACKAGE_PIN R7 [get_ports  {gpio_led_0_tri_o[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_led_0_tri_o[0]}]
-set_property PACKAGE_PIN A16 [get_ports  {gpio_led_0_tri_o[1]}]
+set_property PACKAGE_PIN C19 [get_ports  {gpio_led_0_tri_o[1]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_led_0_tri_o[1]}]
 
 set_property PACKAGE_PIN Y9 [get_ports  {clk50m_in}]

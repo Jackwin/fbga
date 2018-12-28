@@ -1,26 +1,26 @@
 module zynq_top (
-    input       clk50m_in,    // Clock
-    input       rstn_in,
-    output      bit_o,
-    output      clk_o,
-    output      bit_valid_o,
+    input           clk50m_in,    // Clock
+    input           rstn_in,
+    output          bit_o,
+    output          clk_o,
+    output          bit_valid_o,
     //AD9826
-    output      adc_clk_o,
-    output      cdsclk2_o,
-    input [7:0] adc_data_in,
-    output      adc_oeb, //active low
+    output          adc_clk_o,
+    output          cdsclk2_o,
+    input [7:0]     adc_data_in,
+    output          adc_oeb, //active low
 
-    output      sclk_o,
-    inout       sdata_io,
-    output      sload_o,
+    output          sclk_o,
+    inout           sdata_io,
+    output          sload_o,
     //G11620
-    output      g11620_reset_o,
-    output      g11620_clk_o,
-    output      g11620_cf_sel2_o,
+    output          g11620_reset_o,
+    output          g11620_clk_o,
+    output          g11620_cf_sel2_o,
 
-    input       g11620_start_in, // from g11620
-
-    output[1:0] gpio_led_0_tri_o
+    input           g11620_start_in, // from g11620
+    output [2:0]    led,
+    output[1:0]     gpio_led_0_tri_o
 
 );
 
@@ -40,6 +40,8 @@ wire        srst_n_37m5;
 wire        srst_n_200m;
 
 wire [0:0]  data_source_vio;
+//--------------------------- LED --------------------------------
+reg [25:0]  counter;
 // -------------------------- ADC signals -------------------------
 wire        clk_25m;
 wire        srst_n_25m;
@@ -161,6 +163,17 @@ vio_reg vio_reg_inst (
   .clk(clk50m_in),              // input wire clk
   .probe_in0(locked)  // input wire [31 : 0] probe_in0
 );
+
+//-------------------------- LED ------------------------------------
+always @(posedge clk_37m5) begin
+    if (~srst_n_37m5) begin
+        counter <= 'h0;
+    end
+    else begin
+        counter <= counter + 1'b1;
+    end // else
+end
+assign led = {3{counter[25]}};
 // ------------------------- Serilalizer ---- ------------------------
 
 vio_data_gen vio_data_gen_inst (
