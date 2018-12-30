@@ -1,47 +1,151 @@
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
 #include <fcntl.h>
+#include <poll.h>
+#define MAX_BUF 64
+#define SYSFS_GPIO_DIR "/sys/class/gpio"
+int gpio_export(unsigned int gpio)
+{
+    int fd, len;
+    char buf[MAX_BUF];
 
-int main() {
-	int valuefd, exportfd, directionfd; 
-	printf("GPIO test running...\n");
+    fd = open(SYSFS_GPIO_DIR "/export", O_WRONLY);
+    if (fd < 0) {
+        perror("gpio/export");
+        return fd;
+    }
 
-	exportfd = open("/sys/class/gpio/export", O_WRONLY); 
-	if (exportfd < 0) {
-		 printf("Cannot open GPIO to export it\n"); 
-		exit(1);
-	 }
-	 
-	write(exportfd, "873", 32); // The width should be the GPIO_WIDTH export 873 -- LED
-    	close(exportfd);
- 
-    	printf("GPIO exported successfully\n");
-	
-	// Set the direction	
-	directionfd = open("/sys/class/gpio/gpio873/direction", O_RDWR); 
-	if (directionfd < 0) { 
-		printf("Cannot open GPIO direction it\n"); 
-		exit(1);
-	 }
-	write(directionfd, "out", 32); 
-	close(directionfd); 
-	printf("GPIO direction set as output successfully\n");
+    len = snprintf(buf, sizeof(buf), "%d", gpio);
+    write(fd, buf, len);
+    close(fd);
 
-	// Set the value
-	valuefd = open("/sys/class/gpio/gpio873/value", O_RDWR); 
-	if (valuefd < 0) { 
-		printf("Cannot open GPIO value\n"); 
-		exit(1); 
-	}
-	 printf("GPIO value opened, now toggling...\n");
+    return 0;
+}
 
 
+int gpio_unexport(unsigned int gpio)
+{
+    int fd, len;
+    char buf[MAX_BUF];
 
-	while (1) { 
-		write(valuefd,"1", 2); 
-		sleep(1); 
-		write(valuefd,"0", 2);
-		 sleep(1);
-	 }
+    fd = open(SYSFS_GPIO_DIR "/unexport", O_WRONLY);
+    if (fd < 0) {
+        perror("gpio/export");
+        return fd;
+    }
 
+    len = snprintf(buf, sizeof(buf), "%d", gpio);
+    write(fd, buf, len);
+    close(fd);
+    return 0;
+}
+
+int gpio_set_dir(unsigned int gpio, unsigned int out_flag)
+{
+    int fd, len;
+    char buf[MAX_BUF];
+
+    len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR"/gpio%d/direction", gpio);
+
+    fd = open(buf, O_WRONLY);
+    if (fd < 0) {
+        perror("gpio/direction");
+        return fd;
+    }
+
+    if (out_flag)
+        write(fd, "out", 4);
+    else
+        write(fd, "in", 3);
+
+    close(fd);
+    return 0;
+}
+
+int gpio_set_value(unsigned int gpio, unsigned int value)
+{
+    int fd, len;
+    char buf[MAX_BUF];
+
+    len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/value", gpio);
+
+    fd = open(buf, O_WRONLY);
+    if (fd < 0) {
+        perror("gpio/set-value");
+        return fd;
+    }
+
+    if (value)
+        write(fd, "1", 2);
+    else
+        write(fd, "0", 2);
+
+    close(fd);
+    return 0;
+}
+
+int gpio_get_value(unsigned int gpio, unsigned int *value)
+{
+    int fd, len;
+    char buf[MAX_BUF];
+    char ch;
+
+    len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/value", gpio);
+
+    fd = open(buf, O_RDONLY);
+    if (fd < 0) {
+        perror("gpio/get-value");
+        return fd;
+    }
+
+    read(fd, &ch, 1);
+
+    if (ch != '0') {
+        *value = 1;
+    } else {
+        *value = 0;
+    }
+
+    close(fd);
+    return 0;
+}
+
+int gpio_set_edge(unsigned int gpio, char *edge)
+{
+    int fd, len;
+    char buf[MAX_BUF];
+
+    len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/edge", gpio);
+
+    fd = open(buf, O_WRONLY);
+    if (fd < 0) {
+        perror("gpio/set-edge");
+        return fd;
+    }
+
+    write(fd, edge, strlen(edge) + 1);
+    close(fd);
+    return 0;
+}
+
+int gpio_fd_open(unsigned int gpio)
+{
+    int fd, len;
+    char buf[MAX_BUF];
+
+    len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/value", gpio);
+
+    fd = open(buf, O_RDONLY | O_NONBLOCK );
+    if (fd < 0) {
+        perror("gpio/fd_open");
+    }
+    return fd;
+}
+
+int gpio_fd_close(int fd)
+{
+    return close(fd);
 }
