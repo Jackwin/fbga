@@ -5,7 +5,7 @@
 #define CDMA_BASE_ADDRESS     0x7e200000
 #define GPIO_DATA_OFFSET     0
 #define GPIO_DIRECTION_OFFSET     4
-#define DDR_BASE_ADDRESS     0x20000000
+#define DDR_BASE_ADDRESS     0x10000000
 #define PL_PARAM_
 #define PL_BRAM_SRC_ADDRESS  0xC4000000
 #define DDR_BASE_WRITE_ADDRESS    0x30000000
@@ -83,12 +83,13 @@
 #define DDR_MAP_MASK (DDR_MAP_SIZE - 1)
 
 #define DDR_WRITE_OFFSET 0x10000000
-#define BUFFER_BYTESIZE     128  // Length of the buffers for DMA transfer
+#define BUFFER_BYTESIZE (256 * 4)  // Length of the buffers for DMA transfer. In the unit of byte
 #define POLL_TIMEOUT (3 * 1000) /* 3 seconds */
 //--------------------------------------------------------------------
 #define PL_PARAM_RAM_ADDR 0x40000000
 #define INTEG_TIME_ADDR_OFFSET 1
-
+int* MapDDR2UserSpace(void);
+int UnmapDDR2UserSpace(int *mapped_ddr_base);
 int* SetCDMA(void);
 int DMAStart(void * mapped_dev_base, unsigned long char_cnt);
 

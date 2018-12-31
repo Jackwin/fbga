@@ -38,7 +38,7 @@
 #define GPIO_DIRECTION_OFFSET     4
 
 #define DDR_BASE_ADDRESS     0x20000000
-#define PL_PARAM_
+
 #define PL_BRAM_SRC_ADDRESS  0xC4000000
 #define DDR_BASE_WRITE_ADDRESS    0x30000000
 
@@ -106,7 +106,7 @@ int main()
 
     int memfd_1;
     void *mapped_base_1, *mapped_dev_base_1;
-    off_t dev_base_1 = DDR_BASE_ADDRESS; 
+    off_t dev_base_1 = DDR_BASE_ADDRESS;
 
     int memfd_2;
     void *mapped_base_2, *mapped_dev_base_2;
@@ -308,7 +308,7 @@ int main()
        /*======================================================================================
         STEP 11 : Compare Source Buffer with Destination Buffer.
        ========================================================================================*/
-       
+
 /*for (Index = 0; Index < (BUFFER_BYTESIZE/4); Index++)
        {
            if (SrcArray[Index] != DestArray[Index])
@@ -341,7 +341,7 @@ int main()
        printf("Memory mapped at address %p.\n", mapped_base_3);
         // get the address of the device in user space which will be an offset from the base
         // that was mapped as memory is mapped at the start of a page
-        mapped_dev_base_3 = mapped_base_3 + (dev_base_3 & MAP_MASK);	
+        mapped_dev_base_3 = mapped_base_3 + (dev_base_3 & MAP_MASK);
 	int data;
 	data = ((int *)mapped_dev_base_3)[0];
 	printf("data is %x.\n",data);
@@ -354,6 +354,6 @@ int main()
 
        close(memfd_3);
 */
-		
+
     return 0;
 }

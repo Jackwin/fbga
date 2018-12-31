@@ -13,29 +13,31 @@
 
 #include "gpio.h"
 #include "cdma.h"
-
+#include "network.h"
 // ------------------------- GPIO -----------------------------------
 #define SYSFS_GPIO_DIR "/sys/class/gpio"
 #define POLL_TIMEOUT (3 * 1000) /* 3 seconds */
 #define MAX_BUF 64
 
 int main() {
+
     unsigned int gpio;
     unsigned int status;
     gpio = 873;
     gpio_export(gpio);
     gpio_set_dir(gpio, 1);
 
-// GPIO input
+// --------------------------------- gpio_in------------------------------------
     int g11620_done_fd;
+    // Set GPIO input
     gpio = 905;
+
     gpio_export(gpio);
     gpio_set_dir(gpio, 0);
     gpio_set_edge(gpio, "rising");
     g11620_done_fd = gpio_fd_open(gpio);
 
     SetPLParamRAM(1, 0xfff0);
-
     void *mapped_dev_base;
     mapped_dev_base =  SetCDMA();
     struct pollfd fds[1];
@@ -43,8 +45,9 @@ int main() {
 
     char rd_data;
     unsigned long char_cnt;
+//    int status;
     char_cnt = BUFFER_BYTESIZE;
-
+    printf("Ready.\n");
     while (1) {
         fds[0].fd = g11620_done_fd;
         fds[0].events = POLLPRI;
@@ -64,9 +67,17 @@ int main() {
                 perror("read failed!\n");
                 return -1;
             }
+
             printf("Capture the edge.\n");
             if (rd_data == 0x31) {
                 status = DMAStart(mapped_dev_base, char_cnt);
+                int* mapped_ddr_base = MapDDR2UserSpace();
+                int i;
+                for (i = 0; i < BUFFER_BYTESIZE / 4; i++) {
+                    printf("Offset is %d, and data is %x.\n", i, *(mapped_ddr_base + i)) ;
+                }
+                EthernetClient(mapped_ddr_base);
+                UnmapDDR2UserSpace(mapped_ddr_base);
             }
         }
         fflush(stdout);
@@ -74,5 +85,4 @@ int main() {
     gpio_fd_close(g11620_done_fd);
 
 }
-
 

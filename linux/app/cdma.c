@@ -14,7 +14,41 @@
 
 #include "cdma.h"
 
+int *MapDDR2UserSpace(void) {
+    int memfd_ddr;
+    void *mapped_ddr_base, *mapped_dev_ddr_base;
+    off_t dev_ddr_base = DDR_BASE_ADDRESS;
+    memfd_ddr = open("/dev/mem", O_RDWR | O_SYNC);
+    if (memfd_ddr == -1) {
+        printf("Can't open /dev/mem.\n");
+        exit(0);
+    }
+    // Map one page of memory into user space such that the device is in that page, but it may not
+    // be at the start of the page.
+    mapped_ddr_base = mmap(0, DDR_MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, memfd_ddr, dev_ddr_base & ~DDR_MAP_MASK);
+    if (mapped_ddr_base == (void *) - 1) {
+        printf("Can't map the DDR memory to user space.\n");
+        exit(0);
+    }
+    printf("Memory mapped at address %p.\n", mapped_ddr_base);
+    // get the address of the device in user space which will be an offset from the base
+    // that was mapped as memory is mapped at the start of a page
+    // mapped_dev_ddr_base = mapped_ddr_base + (dev_ddr_base & DDR_MAP_MASK);
+
+    close(memfd_ddr);
+    return mapped_ddr_base;
+}
+
+int UnmapDDR2UserSpace(int *mapped_ddr_base) {
+
+    if (munmap(mapped_ddr_base, DDR_MAP_SIZE) == -1) {
+        printf("Can't unmap memory from user space.\n");
+        exit(0);
+    }
+    return 0;
+}
 int* SetCDMA(void) {
+
     int memfd;
     void *mapped_base, *mapped_dev_base;
     off_t dev_base = CDMA_BASE_ADDRESS;
@@ -29,30 +63,6 @@ int* SetCDMA(void) {
     unsigned int SrcArray[BUFFER_BYTESIZE ];
     unsigned int DestArray[BUFFER_BYTESIZE ];
     unsigned int Index;
-// ---------------- Map the DDR to user space-----------------------------------
-    memfd_ddr = open("/dev/mem", O_RDWR | O_SYNC);
-    if (memfd_ddr == -1) {
-        printf("Can't open /dev/mem.\n");
-        exit(0);
-    }
-    printf("/dev/mem opened.\n");
-    // Map one page of memory into user space such that the device is in that page, but it may not
-    // be at the start of the page.
-    mapped_ddr_base = mmap(0, DDR_MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, memfd_ddr, dev_ddr_base & ~DDR_MAP_MASK);
-    if (mapped_ddr_base == (void *) - 1) {
-        printf("Can't map the DDR memory to user space.\n");
-        exit(0);
-    }
-    printf("Memory mapped at address %p.\n", mapped_ddr_base);
-    // get the address of the device in user space which will be an offset from the base
-    // that was mapped as memory is mapped at the start of a page
-    mapped_dev_ddr_base = mapped_ddr_base + (dev_ddr_base & DDR_MAP_MASK);
-
-    if (munmap(mapped_ddr_base, DDR_MAP_SIZE) == -1) {
-        printf("Can't unmap memory from user space.\n");
-        exit(0);
-    }
-    close(memfd_ddr);
 // ------------------ Map the AXI CDMA Register memory to the User layer--------------------
     memfd = open("/dev/mem", O_RDWR | O_SYNC);
     if (memfd == -1) {
@@ -90,7 +100,7 @@ int* SetCDMA(void) {
     RegValue = *((volatile unsigned long *) (mapped_dev_base + XAXICDMA_SR_OFFSET));
     if (!(RegValue & XAXICDMA_SR_IDLE_MASK)) {
         printf("BUS IS BUSY Error Condition \n\r");
-       // return 1;
+        // return 1;
     }
     // Check the DMA Mode and switch it to simple mode
     RegValue = *((volatile unsigned long *) (mapped_dev_base + XAXICDMA_CR_OFFSET));
@@ -167,6 +177,6 @@ int SetPLParamRAM(unsigned char addr_off, unsigned int integ_time) {
         printf("Can't unmap memory from user space.\n");
         exit(0);
     }
-
+    free(buffer);
     close(fd);
 }
