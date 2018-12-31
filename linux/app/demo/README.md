@@ -1,0 +1,1 @@
+All the code can run independently after compilation, aiming at hardware test.
