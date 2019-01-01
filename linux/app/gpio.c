@@ -22,7 +22,7 @@ int gpio_export(unsigned int gpio)
     write(fd, buf, len);
     close(fd);
 
-    return 0;
+    return 1;
 }
 
 
@@ -40,7 +40,7 @@ int gpio_unexport(unsigned int gpio)
     len = snprintf(buf, sizeof(buf), "%d", gpio);
     write(fd, buf, len);
     close(fd);
-    return 0;
+    return 1;
 }
 
 int gpio_set_dir(unsigned int gpio, unsigned int out_flag)
@@ -62,7 +62,7 @@ int gpio_set_dir(unsigned int gpio, unsigned int out_flag)
         write(fd, "in", 3);
 
     close(fd);
-    return 0;
+    return 1;
 }
 
 int gpio_set_value(unsigned int gpio, unsigned int value)
@@ -77,6 +77,7 @@ int gpio_set_value(unsigned int gpio, unsigned int value)
         perror("gpio/set-value");
         return fd;
     }
+    
 
     if (value)
         write(fd, "1", 2);
@@ -84,7 +85,7 @@ int gpio_set_value(unsigned int gpio, unsigned int value)
         write(fd, "0", 2);
 
     close(fd);
-    return 0;
+    return 1;
 }
 
 int gpio_get_value(unsigned int gpio, unsigned int *value)
@@ -110,7 +111,7 @@ int gpio_get_value(unsigned int gpio, unsigned int *value)
     }
 
     close(fd);
-    return 0;
+    return 1;
 }
 
 int gpio_set_edge(unsigned int gpio, char *edge)
@@ -128,7 +129,7 @@ int gpio_set_edge(unsigned int gpio, char *edge)
 
     write(fd, edge, strlen(edge) + 1);
     close(fd);
-    return 0;
+    return 1;
 }
 
 int gpio_fd_open(unsigned int gpio)

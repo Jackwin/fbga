@@ -84,7 +84,7 @@
 
 #define DDR_WRITE_OFFSET 0x10000000
 #define BUFFER_BYTESIZE (256 * 4)  // Length of the buffers for DMA transfer. In the unit of byte
-#define POLL_TIMEOUT (3 * 1000) /* 3 seconds */
+//#define POLL_TIMEOUT (3 * 1000) /* 3 seconds */
 //--------------------------------------------------------------------
 #define PL_PARAM_RAM_ADDR 0x40000000
 #define INTEG_TIME_ADDR_OFFSET 1

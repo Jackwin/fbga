@@ -16,7 +16,7 @@
 int EthernetClient(int * data_ptr)
 {
 
-    char *IP_addr = "192.168.3.28";
+    char *IP_addr = "192.168.3.30";
     printf("ehternet.\n");
     //设置一个socket地址结构client_addr,代表客户机internet地址, 端口
     struct sockaddr_in client_addr;

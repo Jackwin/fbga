@@ -179,4 +179,5 @@ int SetPLParamRAM(unsigned char addr_off, unsigned int integ_time) {
     }
     free(buffer);
     close(fd);
+    return 1;
 }

@@ -109,15 +109,19 @@ always @(posedge clk) begin
             end // DATA:
             BLANK: begin
                 clk_cnt <= clk_cnt + 1'd1;
+                done_o <= 1'b1;
                 if (clk_cnt == 32'd23) begin
                     state <= DONE;
+                    clk_cnt <= 'h0;
                 end // if (clk_cnt == 10'd23)
 
                 if (soft_reset) state <= IDLE;
             end // BLANK:
             DONE: begin
-                state <= IDLE;
                 done_o <= 1'b1;
+                clk_cnt <= clk_cnt + 1'b1;
+                if (clk_cnt == 32'd32)
+                    state <= IDLE;
             end
             default: begin
                 state <= IDLE;
