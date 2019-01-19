@@ -389,12 +389,13 @@ assign pldata_ram_rst = ~srst_n_5m;
 //assign pldata_ram_addr = ad9826_ram_addr;
 
 always@(*) begin
-    pldata_ram_din = ad9826_ram_dout;
+    pldata_ram_din = {ad9826_ram_dout[23:16], ad9826_ram_dout[31:24], ad9826_ram_dout[7:0], ad9826_ram_dout[15:8]};
     pldata_ram_wr = ad9826_ram_wr;
     pldata_ram_addr = ad9826_ram_addr;
     case(data_source_vio[0])
         1'b0: begin
-            pldata_ram_din = ad9826_ram_dout;
+            // Alig with the big-edian on PS
+            pldata_ram_din = {ad9826_ram_dout[23:16], ad9826_ram_dout[31:24], ad9826_ram_dout[7:0], ad9826_ram_dout[15:8]};
             pldata_ram_wr = ad9826_ram_wr;
             pldata_ram_addr = ad9826_ram_addr;
         end // 1'b0:

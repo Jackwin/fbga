@@ -35,14 +35,17 @@ localparam CTRL_R_ADDR = 4'd0,
 
 localparam IDLE = 3'd0,
             GET_INTEG_TIME = 3'd1,
-            INTEG = 3'd2,
-            NOP = 3'd3,
-            DATA = 3'd4,
-            BLANK = 3'd5,
-            DONE = 3'd6;
+            GET_CAP_TIME = 3'd2,
+            INTEG = 3'd3,
+            NOP = 3'd4,
+            DATA = 3'd5,
+            BLANK = 3'd6,
+            DONE = 3'd7;
 
 reg [2:0]       state;
 reg [31:0]      integ_time_reg;
+reg [31:0]      cap_time_reg;
+reg [31:0]      cap_time_cnt;
 reg [8:0]       adc_data_cnt;
 reg [31:0]      clk_cnt;
 reg             start_r;
@@ -80,11 +83,18 @@ always @(posedge clk) begin
                 clk_cnt <= 'h0;
                 reset_o <= 1'b0;
                 adc_data_cnt <= 'h0;
+                cap_time_cnt <= 'h0;
             end // IDLE:
             GET_INTEG_TIME: begin
-                state <= INTEG;
+                //state <= INTEG;
+                state <= GET_CAP_TIME;
                 integ_time_reg <= cfg_ram_din - 1'b1;
+                cfg_ram_rd_o <= 1'b1;
+                cfg_ram_addr_o <= {3'h0,`G11620_CAP_R_ADDR};
             end // GET_INTEG_TIME:
+            GET_CAP_TIME: begin
+                cap_time_reg <= cfg_ram_din - 1'b1;
+            end
             INTEG: begin
                 reset_o <= 1'b1;
                 clk_cnt <= clk_cnt + 1'b1;
@@ -109,10 +119,16 @@ always @(posedge clk) begin
             end // DATA:
             BLANK: begin
                 clk_cnt <= clk_cnt + 1'd1;
-                done_o <= 1'b1;
+               // done_o <= 1'b1;
                 if (clk_cnt == 32'd23) begin
-                    state <= DONE;
                     clk_cnt <= 'h0;
+                    if (cap_time_cnt == cap_time_reg) begin
+                        state <= DONE;
+                    end
+                    else begin
+                        cap_time_cnt <= cap_time_cnt + 1'b1;
+                        state <= INTEG;
+                    end
                 end // if (clk_cnt == 10'd23)
 
                 if (soft_reset) state <= IDLE;
