@@ -94,6 +94,7 @@ always @(posedge clk) begin
             end // GET_INTEG_TIME:
             GET_CAP_TIME: begin
                 cap_time_reg <= cfg_ram_din - 1'b1;
+                state <= INTEG;
             end
             INTEG: begin
                 reset_o <= 1'b1;
