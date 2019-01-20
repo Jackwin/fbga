@@ -45,7 +45,7 @@ int main() {
 
 //Calculate the integration time
    unsigned int integ_time_ms = 300;
-   status = G11620SetIntegTime(integ_time_ms); 
+   status = G11620SetIntegTime(integ_time_ms);
    if (status == 0) {
 	    printf("Fail to set the G11620 integration time.\n");
         return 0;
@@ -58,7 +58,7 @@ int main() {
 
     char rd_data;
     unsigned long char_cnt;
-    
+
     //char_cnt = BUFFER_BYTESIZE;
     printf("Ready.\n");
 
@@ -66,7 +66,7 @@ int main() {
     unsigned int g11620_start_gpio = 877;
     gpio_export(g11620_start_gpio);
     gpio_set_dir(g11620_start_gpio,1);
-    status = G11620Start(g11620_start_gpio);
+    //status = G11620Start(g11620_start_gpio);
     if (status != 1) {
         printf("Fail to start G11620.\n");
          return 0;
@@ -97,7 +97,7 @@ int main() {
             return 0;
         }
         while(1){
-            
+
 //            fds[0].fd = g11620_done_fd;
 //            fds[0].events = POLLPRI;
             lseek(g11620_done_fd, 0, SEEK_SET);
@@ -108,7 +108,7 @@ int main() {
              }
              */
 //            printf("rd_data is %x.\n", rd_data);
-            if (rd_data == '1') { 
+            if (rd_data == '1') {
                 printf("Capture the edge.\n");
                 status = DMAStart(mapped_dev_base, char_cnt);
                 int* mapped_ddr_base = MapDDR2UserSpace();
@@ -153,7 +153,7 @@ int G11620SetIntegTime(int microsecond) {
 		printf("Invalid integration time.\n");
 		return 0;
 	}
-	
+
 	int clk_cycle_cnt = microsecond / 0.2; // The clock cycle is 200 ns
 
     // The address of capture time register in PL is 0x4
@@ -172,7 +172,7 @@ int G11620SetCapTime(int cap_time) {
 }
 
 int G11620Start(unsigned int gpio_num) {
-    int status; 
+    int status;
     status = gpio_set_value(gpio_num,0);
     if (status != 1) {
         printf("Fail to set value at GPIO%.\n", gpio_num);
@@ -189,5 +189,5 @@ int G11620Start(unsigned int gpio_num) {
         return 0;
     }
     return 1;
-	
+
 }

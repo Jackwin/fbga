@@ -20,8 +20,8 @@ module g11620 # (
     input wire      start_in,
     input wire      soft_reset_in,
     output reg      done_o,
-    output reg       cfg_ram_rd_o,
-    output reg [7:0] cfg_ram_addr_o,
+    output wire       cfg_ram_rd_o,
+    output wire [7:0] cfg_ram_addr_o,
     input [31:0]     cfg_ram_din
 );
 
@@ -71,14 +71,14 @@ always @(posedge clk) begin
     end // if (~rst_n)
     else begin
         reset_o <= 1'b0;
-        cfg_ram_rd_o <= 1'b0;
+       // cfg_ram_rd_o <= 1'b0;
         done_o <= 1'b0;
         case(state)
             IDLE: begin
                 if (start_in == 1'b1 && start_r == 1'b0) begin
                     state <= GET_INTEG_TIME;
-                    cfg_ram_rd_o <= 1'b1;
-                    cfg_ram_addr_o <= `G11620_INTEG_R_ADDR;
+                   // cfg_ram_rd_o <= 1'b1;
+                   // cfg_ram_addr_o <= `G11620_INTEG_R_ADDR;
                 end // if (start == 1'b1 && start_r == 1'b0)
                 clk_cnt <= 'h0;
                 reset_o <= 1'b0;
@@ -89,8 +89,8 @@ always @(posedge clk) begin
                 //state <= INTEG;
                 state <= GET_CAP_TIME;
                 integ_time_reg <= cfg_ram_din - 1'b1;
-                cfg_ram_rd_o <= 1'b1;
-                cfg_ram_addr_o <= `G11620_CAP_R_ADDR;
+              //  cfg_ram_rd_o <= 1'b1;
+               // cfg_ram_addr_o <= `G11620_CAP_R_ADDR;
             end // GET_INTEG_TIME:
             GET_CAP_TIME: begin
                 cap_time_reg <= cfg_ram_din - 1'b1;
@@ -146,6 +146,10 @@ always @(posedge clk) begin
         endcase // state
     end // else
 end // always @(posedge clk)
+assign cfg_ram_rd_o = (state == IDLE || state == GET_INTEG_TIME) ? 1'b1: 1'b0;
+assign cfg_ram_addr_o = (state == IDLE) ? `G11620_INTEG_R_ADDR :
+                        (state == GET_INTEG_TIME) ? `G11620_CAP_R_ADDR :
+                        'h0;
 
 // ---- Debug ----------------
 wire [0:0] reset_ila;
@@ -168,7 +172,7 @@ ila_g11620 ila_g11620_inst (
     .probe3(clk_cnt[9:0]), // input wire [9:0]  probe3
     .probe4(adc_data_cnt), // input wire [8:0]  probe4
     .probe5(done_o),
-    .probe6(cfg_ram_din)，
+    .probe6(cfg_ram_din),
     .probe7(cfg_ram_rd_o), // input wire [0:0]  probe7
     .probe8(cfg_ram_addr_o) // input wire [7:0]  probe8
 );
