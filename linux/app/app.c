@@ -44,7 +44,7 @@ int main() {
     g11620_done_fd = gpio_fd_open(g11620_done_gpio);
 
 //Calculate the integration time
-   unsigned int integ_time_ms = 300;
+   unsigned int integ_time_ms = 13104;
    status = G11620SetIntegTime(integ_time_ms);
    if (status == 0) {
 	    printf("Fail to set the G11620 integration time.\n");

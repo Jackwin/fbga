@@ -5,7 +5,6 @@
 BEGIN OS
  PARAMETER OS_NAME = device_tree
  PARAMETER PROC_INSTANCE = ps7_cortexa9_0
- PARAMETER bootargs = console=ttyPS0,115200 root=/dev/mmcblk0p2 rw earlyprintk rootfstype=ext4 rootwait devtmpfs.mount=1
  PARAMETER console_device = ps7_uart_1
  PARAMETER main_memory = ps7_ddr_0
 END
