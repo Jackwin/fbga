@@ -2683,7 +2683,7 @@
             <spirit:name>SEG_cdma_pldata_ram_ctrl_Mem0</spirit:name>
             <spirit:displayName>/cdma_pldata_ram_ctrl/S_AXI/Mem0</spirit:displayName>
             <spirit:addressOffset>0xC4000000</spirit:addressOffset>
-            <spirit:range>8K</spirit:range>
+            <spirit:range>512K</spirit:range>
           </spirit:segment>
           <spirit:segment>
             <spirit:name>SEG_cdma_ram_ctrl_Mem0</spirit:name>

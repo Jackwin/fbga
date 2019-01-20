@@ -14,7 +14,7 @@ module adc9826 # (
     input           adc_start_in, // from g11620
     output reg      adc_done_out,
 
-    output  [9:0]    ram_addr_o,
+    output  [31:0]    ram_addr_o,
     output [31:0]   ram_data_o,
     output          ram_wr_o
 );
@@ -54,7 +54,7 @@ wire [0:0]  cfg_done_ila;
 wire [0:0]  iddr_ce_ila;
 wire [0:0]  adc_data_valid_ila;
 // RAM signals
-reg [9:0]   ram_addr;
+reg [31:0]   ram_addr;
 wire         ram_wr;
 
 assign adc_clk_o = clk;

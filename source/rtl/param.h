@@ -8,9 +8,10 @@
 `define AD9826_GREEN_OFFSET_ADDR 8'd6
 `define AD9826_BLUE_OFFSET_ADDR 8'd7
 
+// Byte address
 `define G11620_CTRL_R_ADDR 8'd0
 `define G11620_INTEG_R_ADDR 8'd4
-`define G11620_CAP_R_ADDR 8'd5
+`define G11620_CAP_R_ADDR 8'd8
 `define G11620_STP_R_ADDR 8'd10
 `define G11620_PW_R_ADDR 8'd11
 `define G11620_SCAN_R_ADDR 8'd12

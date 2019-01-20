@@ -85,7 +85,7 @@ wire        ser_data_gen_valid;
 wire [7:0]  ser_data_gen_num;
 
 // -------------------------- RAM signals ---------------------------
-wire [9:0]  ad9826_ram_addr;
+wire [31:0]  ad9826_ram_addr;
 wire [31:0] ad_9826_ram_din, ad9826_ram_dout;
 reg [8:0]   data_gen_ram_addr;
 
@@ -93,7 +93,7 @@ reg [8:0]   data_gen_ram_addr;
 // pldata_ram stores the ADC data from AD9826
 wire        pldata_ram_clk, pldata_ram_rst;
 reg         pldata_ram_wr;
-reg [9:0]   pldata_ram_addr;
+reg [31:0]   pldata_ram_addr;
 reg [31:0]  pldata_ram_din;
 
 wire [0:0]  pldata_gen_vio;
@@ -402,7 +402,7 @@ always@(*) begin
         1'b1: begin
             pldata_ram_din = pldata_gen;
             pldata_ram_wr = pldata_gen_valid;
-            pldata_ram_addr = pldata_gen_addr;
+            pldata_ram_addr = {22'h0, pldata_gen_addr};
         end // 1'b1:
     endcase // data_source_vio[0]
 end // always@(*)
@@ -419,7 +419,7 @@ assign plparam_ram_addr[7:0] = g11620_cfg_ram_addr;
 
 zynq_sys_wrapper zynq_system_wrapper_inst (
     .ps2pl_ctrl_tri_o    ({g11620_start, g11620_soft_reset, adc9826_cfg_start, gpio_led_0_tri_o}),
-    .pldata_ram_addr  ({22'd0,pldata_ram_addr}),
+    .pldata_ram_addr  (pldata_ram_addr),
     .pldata_ram_clk   (pldata_ram_clk),
     .pldata_ram_din   (pldata_ram_din),
     .pldata_ram_dout  (),
