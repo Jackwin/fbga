@@ -22,6 +22,7 @@
 int G11620Start(unsigned int gpio_num);
 int G11620SetIntegTime(int microsecond);
 
+int G11620SetCapTime(int cap_time);
 int main() {
 
     unsigned int out_gpio;
@@ -58,7 +59,7 @@ int main() {
     char rd_data;
     unsigned long char_cnt;
     
-    char_cnt = BUFFER_BYTESIZE;
+    //char_cnt = BUFFER_BYTESIZE;
     printf("Ready.\n");
 
     /*Start G11620*/
@@ -72,6 +73,7 @@ int main() {
     }
     int cap_times = 0;
     while (1) {
+        /*
         if (cap_times < 10) {
             status = G11620Start(g11620_start_gpio);
             if (status != 1) {
@@ -85,6 +87,15 @@ int main() {
         }
         cap_times++;
         printf("Capture is %d.\n", cap_times);
+        */
+        cap_times = 10;
+        char_cnt = BUFFER_BYTESIZE * cap_times;
+        G11620SetCapTime(cap_times);
+        status = G11620Start(g11620_start_gpio);
+        if (status != 1) {
+            printf("Fail to start G11620.\n");
+            return 0;
+        }
         while(1){
             
 //            fds[0].fd = g11620_done_fd;
@@ -99,6 +110,7 @@ int main() {
 //            printf("rd_data is %x.\n", rd_data);
             if (rd_data == '1') { 
                 printf("Capture the edge.\n");
+                status = DMAStart(mapped_dev_base, char_cnt);
                 int* mapped_ddr_base = MapDDR2UserSpace();
                 EthernetClient(mapped_ddr_base);
                 UnmapDDR2UserSpace(mapped_ddr_base);
@@ -143,8 +155,20 @@ int G11620SetIntegTime(int microsecond) {
 	}
 	
 	int clk_cycle_cnt = microsecond / 0.2; // The clock cycle is 200 ns
-	SetPLParamRAM(1, clk_cycle_cnt);
+
+    // The address of capture time register in PL is 0x4
+    SetPLParamRAM(1, clk_cycle_cnt);
 	return 1;
+}
+
+int G11620SetCapTime(int cap_time) {
+    if (cap_time <= 0) {
+        printf("Cap time should be larger than 0.\n");
+        return 0;
+    }
+    // The address of capture time register in PL is 0x8
+	SetPLParamRAM(2, cap_time);
+    return 1;
 }
 
 int G11620Start(unsigned int gpio_num) {
