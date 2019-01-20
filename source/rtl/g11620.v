@@ -78,7 +78,7 @@ always @(posedge clk) begin
                 if (start_in == 1'b1 && start_r == 1'b0) begin
                     state <= GET_INTEG_TIME;
                     cfg_ram_rd_o <= 1'b1;
-                    cfg_ram_addr_o <= {3'h0,`G11620_INTEG_R_ADDR};
+                    cfg_ram_addr_o <= `G11620_INTEG_R_ADDR;
                 end // if (start == 1'b1 && start_r == 1'b0)
                 clk_cnt <= 'h0;
                 reset_o <= 1'b0;
@@ -90,7 +90,7 @@ always @(posedge clk) begin
                 state <= GET_CAP_TIME;
                 integ_time_reg <= cfg_ram_din - 1'b1;
                 cfg_ram_rd_o <= 1'b1;
-                cfg_ram_addr_o <= {3'h0,`G11620_CAP_R_ADDR};
+                cfg_ram_addr_o <= `G11620_CAP_R_ADDR;
             end // GET_INTEG_TIME:
             GET_CAP_TIME: begin
                 cap_time_reg <= cfg_ram_din - 1'b1;
@@ -168,7 +168,9 @@ ila_g11620 ila_g11620_inst (
     .probe3(clk_cnt[9:0]), // input wire [9:0]  probe3
     .probe4(adc_data_cnt), // input wire [8:0]  probe4
     .probe5(done_o),
-    .probe6(cfg_ram_din)
+    .probe6(cfg_ram_din)，
+    .probe7(cfg_ram_rd_o), // input wire [0:0]  probe7
+    .probe8(cfg_ram_addr_o) // input wire [7:0]  probe8
 );
 
 endmodule
