@@ -6,5 +6,6 @@
 #define GPIO_BASS_ADD 0x41200000
 
 static void __iomem *gpio_drv_base; //gpio_drv base address
+static unsigned char *fbga_drv_base; //fbga_drv base address
 
 #endif
