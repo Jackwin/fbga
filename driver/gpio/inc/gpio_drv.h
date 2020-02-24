@@ -1,12 +1,11 @@
 #ifndef _GPIO_H
 #define _GPIO_H
 
-#define GPIO_SIZE
-#define GPIO_BASE_ADD
+#define MAX_BUF 64
+#define GPIO_SIZE 1024*128
+#define GPIO_BASS_ADD 0x41200000
 
-struct gpio_priv_data
-{
-    struct cdev cdev;
-    long count;
+static void __iomem *gpio_drv_base; //gpio_drv base address
+static unsigned char *fbga_drv_base; //fbga_drv base address
 
 #endif
