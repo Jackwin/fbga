@@ -11,7 +11,7 @@ This driver is for fbga project, and used for GPIO hardware access
  1. "make" in this current directory in PS linux:
 	1. "make" is for compiling the driver
 	2. "make clean" is for cleaning the compiling result
- 2. "gpio_drv.ko" will be found in drv/ directory;
+ 2. "gpio_drv.ko" will be found in current directory;
  3. "insmod gpio_drv.ko" will load the driver to kernel
  
  4. The driver provide access functions include:

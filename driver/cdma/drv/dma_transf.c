@@ -15,19 +15,19 @@
 #include <linux/uaccess.h>
 
 #include <linux/irq.h>
+#include <linux/irqreturn.h>
 #include <linux/interrupt.h>
 
 #include "dma_transf.h"
 #include "cdma_drv.h"
 
 
-irqreturn dma_irq_handle(int irq, void *dev_id)
+static irqreturn_t dma_irq_handle(int irq, void *dev_id)
 {
-    task_schedule(&xxx_tasklet);
     return IRQ_HANDLED;
 }
 
-int reset_cdma()
+int reset_cdma(void)
 {
     unsigned long ResetMask;
     unsigned int RegValue;
@@ -35,9 +35,9 @@ int reset_cdma()
 
     do {
         ResetMask = (unsigned long )XAXICDMA_CR_RESET_MASK;
-        iowrite32(ResetMask, cdma_dev_base + XAXICDMA_CR_OFFSET);
+        iowrite32(ResetMask, cdma_drv_base + XAXICDMA_CR_OFFSET);
         // If the reset bit is still high, then reset is not done
-        ResetMask = ioread32(cdma_dev_base + XAXICDMA_CR_OFFSET);
+        ResetMask = ioread32(cdma_drv_base + XAXICDMA_CR_OFFSET);
         if (!(ResetMask & XAXICDMA_CR_RESET_MASK)) {
             break;
         }
@@ -45,18 +45,18 @@ int reset_cdma()
     } while (TimeOut);
 
     // Checking for the Bus Idle
-    RegValue = ioread32(cdma_dev_base + XAXICDMA_SR_OFFSET);
+    RegValue = ioread32(cdma_drv_base + XAXICDMA_SR_OFFSET);
     if (!(RegValue & XAXICDMA_SR_IDLE_MASK)) {
-        printf("BUS IS BUSY Error Condition \n\r");
+        printk("BUS IS BUSY Error Condition \n\r");
 	return 3;
     }
 
     // Check the DMA Mode and switch it to simple mode
-    RegValue = ioread32(cdma_dev_base + XAXICDMA_CR_OFFSET);
+    RegValue = ioread32(cdma_drv_base + XAXICDMA_CR_OFFSET);
     if ((RegValue & XAXICDMA_CR_SGMODE_MASK)) {
         RegValue = (unsigned long)(RegValue & (~XAXICDMA_CR_SGMODE_MASK));
-        printf("Reading \n \r");
-        iowrite32(RegValue, cdma_dev_base + XAXICDMA_CR_OFFSET);
+        printk("Reading \n \r");
+        iowrite32(RegValue, cdma_drv_base + XAXICDMA_CR_OFFSET);
     }
 
     return 0;
@@ -81,29 +81,29 @@ int DMAStart(unsigned int char_cnt, unsigned int direction) {
     }
 
     //Set the Source Address
-    iowrite32(src_addr, cdma_dev_base + XAXICDMA_SRCADDR_OFFSET);
+    iowrite32(src_addr, cdma_drv_base + XAXICDMA_SRCADDR_OFFSET);
     //Set the Destination Address
-    iowrite32(dest_addr, cdma_dev_base + XAXICDMA_DSTADDR_OFFSET);
+    iowrite32(dest_addr, cdma_drv_base + XAXICDMA_DSTADDR_OFFSET);
     
     //RegValue = (unsigned long)(BUFFER_BYTESIZE);
     // write Byte to Transfer
-    iowrite32(char_cnt, cdma_dev_base + XAXICDMA_BTT_OFFSET);
+    iowrite32(char_cnt, cdma_drv_base + XAXICDMA_BTT_OFFSET);
 
     //--------------------------Wait for the DMA transfer Status ---------------------------
     do {
-        reg_value = ioread32(cdma_dev_base + XAXICDMA_SR_OFFSET);
+        reg_value = ioread32(cdma_drv_base + XAXICDMA_SR_OFFSET);
     } while (!(reg_value & XAXICDMA_XR_IRQ_ALL_MASK));
 
     if ((reg_value & XAXICDMA_XR_IRQ_IOC_MASK)) {
-        printf("Transfer Completed \n\r ");
+        printk("Transfer Completed \n\r ");
         return 1;
     }
     if ((reg_value & XAXICDMA_XR_IRQ_DELAY_MASK)) {
-        printf("IRQ Delay Interrupt\n\r ");
+        printk("IRQ Delay Interrupt\n\r ");
         return 2;
     }
     if ((reg_value & XAXICDMA_XR_IRQ_ERROR_MASK)) {
-        printf(" Transfer Error Interrupt\n\r ");
+        printk(" Transfer Error Interrupt\n\r ");
         return 0;
     }
 

@@ -33,14 +33,12 @@ int cdma_drv_release(struct inode *inode, struct file *filp)
     return 0;
 }
 
-static ssize_t cdma_drv_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
+static ssize_t cdma_drv_read(struct file *filp, char __user *buf, size_t size, loff_t *ppos)
 {
     unsigned long p = *ppos;
     unsigned int count = size;
     unsigned int ret = 0;
 
-    struct cdma_drv_priv_data *devp = filp->private_data;
-    
     DMAStart(16, RD_OP);
 
     if(copy_to_user(buf, (void*)(kmalloc_area), count))
@@ -51,7 +49,7 @@ static ssize_t cdma_drv_read(struct file *file, char __user *buf, size_t size, l
     return ret;
 }
 
-static ssize_t cdma_drv_write(struct file *file, const char __user *buf, size_t size, loff_t *ppos)
+static ssize_t cdma_drv_write(struct file *filp, const char __user *buf, size_t size, loff_t *ppos)
 {
     unsigned long p = *ppos;
     unsigned int count = size;
@@ -155,7 +153,7 @@ static int cdma_drv_init(void)
     int ret;
     int result;
     
-    cdma_drv_base = ioremap(CDMA_BASS_ADD, CDMA_SIZE); //change phy add to vir add
+    cdma_drv_base = ioremap(CDMA_BASS_ADD, CDMA_REG_SIZE); //change phy add to vir add
     
     kmalloc_area = kmalloc(BUFFER_BYTESIZE, __GFP_DMA);
     if(!kmalloc_area) 
@@ -166,12 +164,12 @@ static int cdma_drv_init(void)
 
     memset(kmalloc_area, 0, BUFFER_BYTESIZE); //set 0 for kmalloc memory
 
-    SetPageReserved(virt_to_page(kmalloc_area);
+    SetPageReserved(virt_to_page(kmalloc_area));
 
     reset_cdma();
     
-    set_irq_type(DMA_IRQ_NUM, IRQ_TYPE_EDGE_RISING);
-    ret = request_irq(DMA_IRQ_NUM, dma_irq_handle, SA_INTERRUPT, DEVICE_NAME, NULL);
+//    set_irq_type(DMA_IRQ_NUM, IRQ_TYPE_EDGE_RISING);
+    ret = request_irq(DMA_IRQ_NUM, dma_irq_handle, 0x20, DEVICE_NAME, NULL);
     if(ret)
     {
     	printk(" Can not apply IRQ for DMA\n");
@@ -199,7 +197,7 @@ static void cdma_drv_exit(void)
     printk("Module exit!\n");
     iounmap(cdma_drv_base);
     kfree(kmalloc_area);
-    free_irq(DMA_IRQ_NUM);
+    free_irq(DMA_IRQ_NUM,1);
     misc_deregister(&cdma_drv_dev);
 }
 

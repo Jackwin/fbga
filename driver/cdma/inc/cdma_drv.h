@@ -6,6 +6,8 @@
 #define CDMA_BASS_ADD 0x7e200000
 #define DMA_IRQ_NUM 62
 
+#define BUFFER_BYTESIZE 64
+
 #define WR_OP 0
 #define RD_OP 1
 
