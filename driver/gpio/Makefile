@@ -1,7 +1,8 @@
 KERN_DIR = /lib/modules/`uname -r`/build
-EXTRA_CFLAGS := -I/home/chengl/workspace/github/fbga/driver/gpio/inc
-
-obj-m := drv/gpio_drv.o
+ccflags-y += -I./inc
+TARGET := gpio_drv
+obj-m := $(TARGET).o
+$(TARGET)-obj := drv/gpio_drv.o
 
 all:
 	make -C $(KERN_DIR) M=`pwd` modules
