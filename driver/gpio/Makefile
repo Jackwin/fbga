@@ -1,6 +1,6 @@
 KERN_DIR = /lib/modules/`uname -r`/build
 ccflags-y += -I./inc
-obj-m := gpio_drv.o
+obj-m := drv/gpio_drv.o
 
 all:
 	make -C $(KERN_DIR) M=`pwd` modules
