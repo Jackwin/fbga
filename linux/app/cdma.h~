@@ -1,8 +1,14 @@
 #ifndef _CDMA_H
 #define _CDMA_H
 
+
 #define CDMA_BASE_ADDRESS     0x7e200000
+#define GPIO_DATA_OFFSET     0
+#define GPIO_DIRECTION_OFFSET     4
+#define DDR_BASE_ADDRESS     0x10000000
+#define PL_PARAM_
 #define PL_BRAM_SRC_ADDRESS  0xC4000000
+#define DDR_BASE_WRITE_ADDRESS    0x30000000
 
 #define XGPIO_CHAN_OFFSET  8
 
