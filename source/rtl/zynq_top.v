@@ -47,7 +47,7 @@ wire        clk_25m;
 wire        srst_n_25m;
 wire        clk_5m;
 wire        srst_n_5m;
-wire        cfg_start;
+//wire        cfg_start;
 wire        sdata_o;
 wire        sdata_i;
 wire        tri_en;
@@ -62,8 +62,8 @@ wire [31:0] adc9826_cfg_ram_din;
 wire        adc9826_cfg_start;
 // AD9825 config signals
 wire [0:0]  cfg_wr_vio;
-wire [8:0]  cfg_data;
-wire [2:0]  cfg_addr;
+//wire [8:0]  cfg_data;
+//wire [2:0]  cfg_addr;
 wire [0:0]  cfg_rd_valid_vio;
 wire [8:0]  cfg_rd_data;
 wire [0:0]  cfg_rd_vio;
@@ -165,15 +165,48 @@ vio_reg vio_reg_inst (
 );
 
 //-------------------------- LED ------------------------------------
+
+wire        adc9826_cfg_autostart;
+reg [15:0]  powerup_cnt;
+reg         led_ena;
+
+always @(posedge sclk) begin
+    if (~srst_n_sclk) begin
+        powerup_cnt <= 'h0;
+    end else begin
+        if (powerup_cnt == 16'hffff) begin
+            powerup_cnt <= powerup_cnt;
+        end else begin
+            powerup_cnt <= powerup_cnt + 1'd1;
+        end
+    end
+end
+// Generate auto configuration signal for adc9826
+assign adc9826_cfg_autostart = (powerup_cnt == 16'hfffe);
+
+
+// After adc9826 configuration done, the leds start to shrink
+always @(posedge clk_37m5) begin
+    if (~srst_n_37m5) begin
+        led_ena <= 1'b0;
+    end else begin
+        if (adc_cfg_done) begin
+            led_ena <= 1'b1;
+        end
+    end
+end
+
 always @(posedge clk_37m5) begin
     if (~srst_n_37m5) begin
         counter <= 'h0;
     end
-    else begin
+    else if (led_ena) begin
         counter <= counter + 1'b1;
     end // else
 end
 assign led = {3{counter[25]}};
+
+
 // ------------------------- Serilalizer ---- ------------------------
 
 vio_data_gen vio_data_gen_inst (
@@ -296,7 +329,7 @@ adc9826 adc9826_inst (
     .ram_data_o  (ad9826_ram_dout),
     .ram_wr_o    (ad9826_ram_wr)
     );
-
+/*
 vio_data_gen ad9826_cfg_vio_inst (
     .clk       (sclk),
     .probe_out0(cfg_start),
@@ -312,6 +345,66 @@ vio_cfg_9826 vio_cfg_9826_inst (
   .probe_out2(cfg_addr),  // output wire [2 : 0] probe_out2
   .probe_out3(cfg_rd_vio)  // output wire [0 : 0] probe_out3
 );
+*/
+reg [1:0]       cs;
+reg             cfg_wr;
+reg [2:0]       cfg_addr;
+reg [8:0]       cfg_data;
+reg             cfg_start;
+localparam IDLE_s = 2'd0,
+            S1_s = 2'd1,
+            S2_s = 2'd2,
+            S3_s = 2'd3;
+
+
+
+always @(posedge sclk) begin
+    if (~srst_n_sclk) begin
+        cs = IDLE_s;
+    end 
+    else begin
+        case(cs)
+            IDLE_s: if (adc9826_cfg_autostart) cs <= S1_s;
+            S1_s: cs <= S2_s;
+            S2_s: cs <= S3_s;
+            S3_s: cs <= IDLE_s;
+            default: cs <= IDLE_s;
+        endcase
+    end
+end
+
+always @(*) begin
+    cfg_start = 1'b0;
+    cfg_addr = 'h0;
+    cfg_wr = 'h0;
+    cfg_data = 'h0;
+    case(cs)
+        IDLE_s: begin
+            cfg_addr = 'h0;
+            cfg_wr = 'h0;
+            cfg_data = 'h0;
+        end
+        S1_s: begin
+            cfg_addr = 'h0;
+            cfg_data = 'h0c8;
+            cfg_wr = 1'b1;
+        end
+        S2_s: begin
+            cfg_addr = 'h1;
+            cfg_data = 'h0c0;
+            cfg_wr = 1'b1;
+        end
+        S3_s: begin
+            cfg_start = 1'b1;
+        end
+        default: begin
+            cfg_start = 1'b0;
+            cfg_addr = 'h0;
+            cfg_wr = 'h0;
+            cfg_data = 'h0;
+        end
+    endcase
+end
 
 
 adc9826_cfg adc9826_cfg_inst (
@@ -320,11 +413,11 @@ adc9826_cfg adc9826_cfg_inst (
     .cfg_done_o  (adc_cfg_done),
 
     .cfg_data_in  (cfg_data),
-    .cfg_wr_in    (cfg_wr_vio[0]),
+    .cfg_wr_in    (cfg_wr),
     .cfg_addr_in  (cfg_addr),
-    .cfg_rd_in    (cfg_rd_vio[0]),
-    .cfg_rd_data_o(cfg_rd_data),
-    .cfg_rd_valid_o(cfg_rd_valid_vio[0]),
+    .cfg_rd_in    (),
+    .cfg_rd_data_o(),
+    .cfg_rd_valid_o(),
 /*
     .cfg_ram_rd_o  (adc9826_cfg_ram_rd),
     .cfg_ram_addr_o(adc9826_cfg_ram_addr),

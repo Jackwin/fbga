@@ -57,8 +57,21 @@ wire [0:0]  adc_data_valid_ila;
 reg [31:0]   ram_addr;
 wire         ram_wr;
 
-assign adc_clk_o = clk;
+//assign adc_clk_o = clk;
 assign sclk = clk;
+ODDR #(
+    .DDR_CLK_EDGE("SAME_EDGE"), // "OPPOSITE_EDGE" or "SAME_EDGE" 
+    .INIT(1'b0),    // Initial value of Q: 1'b0 or 1'b1
+    .SRTYPE("SYNC") // Set/Reset type: "SYNC" or "ASYNC" 
+) ODDR_adcclk (
+    .Q(adc_clk_o),   // 1-bit DDR output
+    .C(clk),   // 1-bit clock input
+    .CE(1'b1), // 1-bit clock enable input
+    .D1(1'b1), // 1-bit data input (positive edge)
+    .D2(1'b0), // 1-bit data input (negative edge)
+    .R(1'b0),   // 1-bit reset
+    .S(1'b0)    // 1-bit set
+);
 
 always @(posedge clk) begin
     cfg_done <= cfg_done_in;
