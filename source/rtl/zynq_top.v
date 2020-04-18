@@ -61,12 +61,14 @@ wire [7:0]  adc9826_cfg_ram_addr;
 wire [31:0] adc9826_cfg_ram_din;
 wire        adc9826_cfg_start;
 // AD9826 config signals
+/*
 wire [0:0]  cfg_wr_vio;
 wire [8:0]  cfg_data;
 wire [2:0]  cfg_addr;
 wire [0:0]  cfg_rd_valid_vio;
 wire [8:0]  cfg_rd_data;
 wire [0:0]  cfg_rd_vio;
+*/
 // -------------------------- G11620 signals --------------------
 wire        g11620_start;
 wire        g11620_soft_reset;
@@ -331,7 +333,7 @@ adc9826 adc9826_inst (
     );
 
 
-
+/*
 vio_cfg_9826 vio_cfg_9826_inst (
   .clk(sclk),                // input wire clk
   .probe_in0(cfg_rd_valid_vio),    // input wire [0 : 0] probe_in0
@@ -349,17 +351,13 @@ vio_data_gen ad9826_cfg_vio_inst (
     .probe_out0(cfg_start),
     .probe_out1()
     );
-
-
-
-
-/*
+*/
 
 reg [1:0]       cs;
 reg             cfg_wr;
 reg [2:0]       cfg_addr;
 reg [8:0]       cfg_data;
-wire             cfg_start;
+reg             cfg_start;
 
 localparam IDLE_s = 2'd0,
             S1_s = 2'd1,
@@ -425,7 +423,7 @@ always @(*) begin
         end
     endcase
 end
-*/
+
 
 adc9826_cfg adc9826_cfg_inst (
     .clk         (sclk),
@@ -433,11 +431,11 @@ adc9826_cfg adc9826_cfg_inst (
     .cfg_done_o  (adc_cfg_done),
 
     .cfg_data_in  (cfg_data),
-    .cfg_wr_in    (cfg_wr_vio),
+    .cfg_wr_in    (cfg_wr),
     .cfg_addr_in  (cfg_addr),
     .cfg_rd_in    (cfg_rd_vio),
-    .cfg_rd_data_o(cfg_rd_data),
-    .cfg_rd_valid_o(cfg_rd_valid_vio),
+    .cfg_rd_data_o(),
+    .cfg_rd_valid_o(),
 /*
     .cfg_ram_rd_o  (adc9826_cfg_ram_rd),
     .cfg_ram_addr_o(adc9826_cfg_ram_addr),
