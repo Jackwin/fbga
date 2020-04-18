@@ -169,12 +169,13 @@ ila_g11620 ila_g11620_inst (
     .probe0(state), // input wire [2:0]  probe0
     .probe1(reset_ila), // input wire [0:0]  probe1
     .probe2(start_ila), // input wire [0:0]  probe2
-    .probe3(clk_cnt[9:0]), // input wire [9:0]  probe3
+    .probe3(clk_cnt), // input wire [9:0]  probe3
     .probe4(adc_data_cnt), // input wire [8:0]  probe4
     .probe5(done_o),
     .probe6(cfg_ram_din),
     .probe7(cfg_ram_rd_o), // input wire [0:0]  probe7
-    .probe8(cfg_ram_addr_o) // input wire [7:0]  probe8
+    .probe8(cfg_ram_addr_o), // input wire [7:0]  probe8
+    .probe9(integ_time_reg)
 );
 
 endmodule

@@ -238,9 +238,22 @@ serial_interface # (
 assign ram_din = cfg_data_in;
 assign ram_wr = cfg_wr_in;
 assign ram_addr = cfg_addr_in;
+
 always @(posedge clk) begin
     if (ram_wr) ram[ram_addr] <= ram_din;
 end
+/*
+initial begin
+    ram[0] = 9'h0c8;
+    ram[1] = 9'h0c0;
+    ram[2] = 9'h000;
+    ram[3] = 9'h000;
+    ram[4] = 9'h000;
+    ram[5] = 9'h000;
+    ram[6] = 9'h000;
+    ram[7] = 9'h000;
+end
+*/
 
 assign ram_dout = ram[ram_addr];
 //assign cfg_ram_addr_o = addr;
@@ -252,7 +265,7 @@ always @(posedge clk) begin
     cfg_rd_data_o <= ram_dout;
     cfg_rd_valid_o <= cfg_rd_in;
 end // always @(posedge clk)
-/*
+
 wire [0:0]      cfg_start_vio;
 wire [0:0]      cfg_rd_vio;
 wire [0:0]      sload_vio;
@@ -263,7 +276,7 @@ wire [0:0]      rd_cmd_vio;
 wire [0:0]      ready_vio;
 wire [0:0]      tri_en_vio;
 assign cfg_start_vio[0] = cfg_start;
-assign cfg_rd_vio[0] = cfg_ram_rd_o;
+//assign cfg_rd_vio[0] = cfg_ram_rd_o;
 assign sload_vio[0] = sload_o;
 assign sdata_i_vio[0] = sdata_i;
 assign sdata_o_vio[0] = sdata_o;
@@ -278,7 +291,7 @@ ila_ad9826 ila_ad9826_cfg_inst (
     .probe1(cfg_start_vio), // input wire [0:0]  probe1
     .probe2(rd_data), // input wire [8:0]  probe2
     .probe3(wr_cmd_vio), // input wire [0:0]  probe3
-    .probe4(cfg_rd_vio), // input wire [0:0]  probe4
+    .probe4(wr_cmd_vio), // input wire [0:0]  probe4
     .probe5(addr[2:0]), // input wire [2:0]  probe5
     .probe6(ready_vio), // input wire [0:0]  probe6
     .probe7(sload_vio), // input wire [0:0]  probe7
@@ -287,5 +300,7 @@ ila_ad9826 ila_ad9826_cfg_inst (
     .probe10(tri_en_vio)
 
 );
-*/
+
+
+
 endmodule
